@@ -9,6 +9,13 @@ Notes and code about Nasa Get
   - [Notes](#notes)
   - [Create the app](#create-the-app)
   - [Remove secret key in settings.py](#remove-secret-key-in-settingspy)
+  - [Create home page and test](#create-home-page-and-test)
+    - [Create the app homepage](#create-the-app-homepage)
+    - [Create views](#create-views)
+    - [Create templates](#create-templates)
+      - [Create a base template](#create-a-base-template)
+    - [Create a HTML template for homepage app](#create-a-html-template-for-homepage-app)
+    - [Register URLs](#register-urls)
   - [Additional Information](#additional-information)
     - [Screenshots](#screenshots)
     - [Links](#links)
@@ -100,6 +107,140 @@ except KeyError:
 ```
 
 - Add `.env` to `.gitignore`, if not already done
+
+## Create home page and test
+
+### Create the app homepage
+
+- In the console, run the command `python manage.py startapp homepage`
+- This will serve as the homepage for the project
+- Add the app under `INSTALLED_APPS`
+
+```python
+# Application definition
+
+INSTALLED_APPS = [
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "homepage",
+]
+```
+
+### Create views
+
+- Add a view `homepage` in the the `views.py` file in the `homepage` directory.
+- This will simply render `home.html`
+
+```python
+def homepage(request):
+    return render(request, "home.html", {})
+```
+
+### Create templates
+
+#### Create a base template
+
+- Create a `templates` directory in the main project directory `nasa_get`
+- Create a file `base.html` inside
+- In `settings.py`, update `TEMPLATES` list
+
+```python
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": ["nasa_get\\templates\\"],  ## Add base templates directory
+        "APP_DIRS": True,
+    }
+]
+```
+
+- Create a `static` folder in `BASE_DIR` `nasa_get`
+- Create a `static/nasa_get/css` folder tree
+- Add list of `STATICFILES_DIRS` by joining `nasa_get\\static\\nasa_get`with `BASE_DIR` in `settings.py`
+
+```python
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "nasa_get\\static\\nasa_get")]
+```
+
+- Inside `templates/base.html` add the block tag and load static files
+- Add css and js styling using `"{% static '<path_to_resource>/resource' %}"`
+
+```html
+{% block header_content %} {% load static %}
+<html>
+  <meta charset="utf-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, user-scalable=yes"
+  />
+  <link rel="stylesheet" href="{% static 'css/awsm_theme_big-stone.css' %}" />
+  {% endblock header_content %}
+</html>
+
+```
+
+### Create a HTML template for homepage app
+
+- Create the `homepage/templates` directory and add a template file `home.html`
+- Add some content
+
+```html
+{% extends "base.html" %} {% load static %} {% block header_content %}
+{{block.super }}
+<head>
+  <title>Welcome to NASA Get</title>
+</head>
+<body>
+  <main>
+    <section>
+      <h1>Welcome to NASA Get!</h1>
+    </section>
+  </main>
+</body>
+{% endblock header_content %}
+
+```
+
+### Register URLs
+
+- Include a URL configuration for the `homepage` app with path `home/`
+
+```python
+"""nasa_get URL Configuration
+
+The `urlpatterns` list routes URLs to views. For more information please see:
+    https://docs.djangoproject.com/en/3.1/topics/http/urls/
+Examples:
+Function views
+    1. Add an import:  from my_app import views
+    2. Add a URL to urlpatterns:  path('', views.home, name='home')
+Class-based views
+    1. Add an import:  from other_app.views import Home
+    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
+Including another URLconf
+    1. Import the include() function: from django.urls import include, path
+    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+"""
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [path("admin/", admin.site.urls), path("home/", include("homepage.urls"))]
+```
+
+- Create the `homepage.urls` module as `homepage/urls.py`
+- Create a list of URL patterns that correspond to the various view functions
+
+```python
+from django.urls import path
+
+from . import views
+
+urlpatterns = [path("", views.homepage, name="homepage")]
+```
 
 ## Additional Information
 

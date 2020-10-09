@@ -19,14 +19,26 @@
 
 - Add a view `homepage` in the the `views.py` file in the `homepage` directory.
 
-### Create a HTML template
+### Add a base template
 
-- Create the `templates` directory and add a template file `home.html`
+- Create a `templates` directory in the main project directory `nasa_get`
+- Create a fil e `base.html`
+- In `settings.py`, update `TEMPLATES` list
+- Create a `static` folder in `BASE_DIR` `nasa_get`
+- Create a `static/nasa_get/css` folder tree
+- Add list of `STATICFILES_DIRS` by joining `nasa_get\\static\\nasa_get`with `BASE_DIR`
+- Inside `templates/base.html` add the block tag and load static files
+- Add css and js styling using `"{% static '<path_to_resource>/resource' %}"`
+
+### Create a HTML template for homepage app
+
+- Create the `homepage/templates` directory and add a template file `home.html`
+- Add some content
 
 ### Register URLs
 
 - Include a URL configuration for the `homepage` app with path `home/`
-- Create the hello_world.urls module as hello_world/urls.py
+- Create the `homepage.urls` module as `homepage/urls.py`
 - Create a list of URL patterns that correspond to the various view functions
 
 ### Refactor
