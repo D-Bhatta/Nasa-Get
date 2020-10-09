@@ -3,10 +3,10 @@
 ## Remove secret key
 
 - Remove the secret key in django app
-- Create a file `secrets.py`
-- Import everything from `secrets.py` into `settings.py`
-- Create a new secret key
-- Add `settings.py` to version control
+- Create a file `utils.py`
+- Create a function `generate_secret_key` that writes a secret key to an `.env` file
+- Use `dotenv` to set environment variables in `settings.py`
+- Add `.env` to .gitignore
 
 ## Create index page and test
 
