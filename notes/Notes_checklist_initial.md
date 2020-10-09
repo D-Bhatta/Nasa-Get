@@ -15,7 +15,7 @@
 - In the console, run the command `python manage.py startapp homepage`
 - Add the app under `INSTALLED_APPS`
 
-### Install the app
+### Create views
 
 - Add a view `homepage` in the the `views.py` file in the `homepage` directory.
 
