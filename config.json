@@ -1,0 +1,36 @@
+{
+  "logging": {
+    "version": 1,
+    "formatters": {
+      "simple": {
+        "format": "%(message)s"
+      }
+    },
+    "handlers": {
+      "console": {
+        "class": "logging.StreamHandler",
+        "level": "DEBUG",
+        "formatter": "simple",
+        "stream": "ext://sys.stdout"
+      },
+      "fileHandler": {
+        "class": "logging.FileHandler",
+        "level": "DEBUG",
+        "formatter": "simple",
+        "filename": "app.log",
+        "mode": "w"
+      }
+    },
+    "loggers": {
+      "appLogger": {
+        "level": "DEBUG",
+        "handlers": ["console", "fileHandler"],
+        "propagate": false
+      }
+    },
+    "root": {
+      "level": "DEBUG",
+      "handlers": ["console"]
+    }
+  }
+}
