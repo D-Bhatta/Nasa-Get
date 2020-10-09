@@ -1,0 +1,54 @@
+---
+
+commands: |
+    echo Hello
+    git status
+    git pull origin main
+    git checkout -b setup
+    git status
+    python -m venv environment-name
+    echo created environment-name
+    echo. >> .gitignore
+    echo # Environments >> .gitignore
+    echo environment-name/ >> .gitignore
+    git pull
+    git status
+    git add .gitignore
+    git status
+    git commit -m "Add environment name to .gitignore"
+    git status
+    git push origin setup
+    git status
+    environment-name\\Scripts\\python.exe -m pip --version
+    environment-name\\Scripts\\python.exe -m pip install -r requirements_dev.txt
+    ren project_name\\project_name.py new_name.py
+    ren project_name new_name
+    ren tests\\test_project_name.py test_new_name.py
+    black .
+    git status
+    git add *
+    git status
+    pre-commit install
+    pre-commit run --all-files
+    git status
+    git add *
+    git status
+    git commit -m "Create files and run pre-commit"
+    git status
+    git add *
+    git status
+    git commit -m "Create files and run pre-commit"
+    git status
+    git push origin setup
+    git status
+
+substitutions:
+  - sub: nasa_get
+    loc:
+      - repo-name
+  - sub: ng-env
+    loc:
+      - environment-name
+  - sub: nasa_get
+    loc:
+      - new_name
