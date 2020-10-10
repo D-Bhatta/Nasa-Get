@@ -1,13 +1,14 @@
 ---
-name: Bug report
-about: Create a report to help us improve
+name: 🐛 Bug report
+about: Create a report to help us improve ✅
 title: ''
 labels: ''
 assignees: ''
 
 ---
 
-**Describe the bug**
+# A descriptive title
+
 A clear and concise description of what the bug is.
 
 **To Reproduce**
@@ -23,6 +24,11 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
+## An overview of the suggested solution
+
+**Describe the solution you'd like**
+A clear and concise description of what you want to happen.
+
 **Desktop (please complete the following information):**
  - OS: [e.g. iOS]
  - Browser [e.g. chrome, safari]
@@ -36,3 +42,6 @@ If applicable, add screenshots to help explain your problem.
 
 **Additional context**
 Add any other context about the problem here.
+
+### Files
+A list of relevant files for this issue. This will help people navigate the project and offer some clues of where to start.
