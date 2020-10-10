@@ -27,6 +27,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 try:
+    path_env = os.path.join(BASE_DIR, ".env")
+    dotenv.read_dotenv(path_env)
     SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 except KeyError:
     path_env = os.path.join(BASE_DIR, ".env")
@@ -43,16 +45,16 @@ try:
 except KeyError:
     path_env = os.path.join(BASE_DIR, ".env")
     dotenv.read_dotenv(path_env)
-    SECRET_KEY = os.environ["DJANGO_ENVIRONMENT"]
+    DJANGO_ENVIRONMENT = os.environ["DJANGO_ENVIRONMENT"]
 
-if os.environ["DJANGO_ENVIRONMENT"] == "PRODUCTION":
+if DJANGO_ENVIRONMENT == "PRODUCTION":
     ALLOWED_HOSTS = [
         "d5625.pythonanywhere.com",
     ]
     STATICFILES_DIRS = [
         os.path.join(BASE_DIR, "nasa_get/static/nasa_get"),
     ]
-elif os.environ["DJANGO_ENVIRONMENT"] == "DEVELOPMENT":
+elif DJANGO_ENVIRONMENT == "DEVELOPMENT":
     STATICFILES_DIRS = [
         os.path.join(BASE_DIR, "nasa_get\\static\\nasa_get"),
     ]
