@@ -19,6 +19,7 @@ Notes and code about Nasa Get
   - [Deploy app on PythonAnywhere](#deploy-app-on-pythonanywhere)
   - [Fix static assets problem](#fix-static-assets-problem)
   - [Refactor the settings.py file to enable getting host names from .env](#refactor-the-settingspy-file-to-enable-getting-host-names-from-env)
+  - [Add logging to app](#add-logging-to-app)
   - [Additional Information](#additional-information)
     - [Screenshots](#screenshots)
     - [Links](#links)
@@ -341,6 +342,35 @@ DJANGO_HOST_NAME = localhost_host_string
 
 DJANGO_SECRET_KEY = keystring
 
+```
+
+## Add logging to app
+
+- Add logging to app
+- Log stuff in `homepage/view.py`
+
+```python
+from django.shortcuts import render
+from pathlib import Path
+import logging
+import logging.config
+from json import load as jload
+
+
+# Configure logger lg with config for appLogger from config.json["logging"]
+CONFIG_DIR = Path(__file__).resolve().parent.parent.parent
+with open(CONFIG_DIR / "config.json", "r") as f:
+    config = jload(f)
+    logging.config.dictConfig(config["logging"])
+lg = logging.getLogger("appLogger")
+# lg.debug("This is a debug message")
+
+# Create your views here.
+
+
+def homepage(request):
+    lg.debug("Rendering homepage")
+    return render(request, "home.html", {})
 ```
 
 ## Additional Information
