@@ -11,3 +11,4 @@
 
 - Find out what environment we are running in using a `.env` setting
 - Set variables according to that setting
+- Add static files mapping on PythonAnywhere

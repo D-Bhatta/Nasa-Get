@@ -268,6 +268,8 @@ else:
 ```
 
 - After adding logging this needs to be refactored.
+- Add static files mapping on PythonAnywhere by figuring out the url `/static/` and directory `/home/D5625/Nasa-Get/nasa_get/static/`
+
 
 ## Additional Information
 
