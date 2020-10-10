@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 import os
 from pathlib import Path
+from socket import gethostname
 
 import dotenv
 
@@ -26,6 +27,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 try:
+    path_env = os.path.join(BASE_DIR, ".env")
+    dotenv.read_dotenv(path_env)
     SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 except KeyError:
     path_env = os.path.join(BASE_DIR, ".env")
@@ -36,7 +39,28 @@ except KeyError:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# Find out what environment we are running in
+try:
+    DJANGO_ENVIRONMENT = os.environ["DJANGO_ENVIRONMENT"]
+except KeyError:
+    path_env = os.path.join(BASE_DIR, ".env")
+    dotenv.read_dotenv(path_env)
+    DJANGO_ENVIRONMENT = os.environ["DJANGO_ENVIRONMENT"]
+
+if DJANGO_ENVIRONMENT == "PRODUCTION":
+    ALLOWED_HOSTS = [
+        "d5625.pythonanywhere.com",
+    ]
+    STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, "nasa_get/static/nasa_get"),
+    ]
+elif DJANGO_ENVIRONMENT == "DEVELOPMENT":
+    STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, "nasa_get\\static\\nasa_get"),
+    ]
+    ALLOWED_HOSTS = []
+else:
+    pass
 
 
 # Application definition
@@ -66,7 +90,7 @@ ROOT_URLCONF = "nasa_get.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": ["nasa_get\\templates\\",],  ## Add base templates directory
+        "DIRS": ["nasa_get/templates/",],  ## Add base templates directory
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -131,6 +155,4 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "nasa_get\\static\\nasa_get"),
-]
+STATIC_ROOT = os.path.join(BASE_DIR, "static")

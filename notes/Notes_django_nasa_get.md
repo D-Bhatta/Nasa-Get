@@ -16,6 +16,7 @@ Notes and code about Nasa Get
       - [Create a base template](#create-a-base-template)
     - [Create a HTML template for homepage app](#create-a-html-template-for-homepage-app)
     - [Register URLs](#register-urls)
+  - [Fix static assets problem](#fix-static-assets-problem)
   - [Additional Information](#additional-information)
     - [Screenshots](#screenshots)
     - [Links](#links)
@@ -241,6 +242,34 @@ from . import views
 
 urlpatterns = [path("", views.homepage, name="homepage")]
 ```
+
+## Fix static assets problem
+
+- Find out what environment we are running in using a `.env` setting
+- Set variables according to that setting
+
+```python
+# Find out what environment we are running in
+try:
+    DJANGO_ENVIRONMENT = os.environ["DJANGO_ENVIRONMENT"]
+except KeyError:
+    path_env = os.path.join(BASE_DIR, ".env")
+    dotenv.read_dotenv(path_env)
+    SECRET_KEY = os.environ["DJANGO_ENVIRONMENT"]
+
+if os.environ["DJANGO_ENVIRONMENT"] == "PRODUCTION":
+    ALLOWED_HOSTS = ["d5625.pythonanywhere.com"]
+    STATICFILES_DIRS = [os.path.join(BASE_DIR, "nasa_get/static/nasa_get")]
+elif os.environ["DJANGO_ENVIRONMENT"] == "DEVELOPMENT":
+    STATICFILES_DIRS = [os.path.join(BASE_DIR, "nasa_get\\static\\nasa_get")]
+    ALLOWED_HOSTS = []
+else:
+    pass
+```
+
+- After adding logging this needs to be refactored.
+- Add static files mapping on PythonAnywhere by figuring out the url `/static/` and directory `/home/D5625/Nasa-Get/nasa_get/static/`
+
 
 ## Additional Information
 
