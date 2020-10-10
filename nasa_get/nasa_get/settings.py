@@ -40,16 +40,19 @@ except KeyError:
 DEBUG = True
 
 # Find out what environment we are running in
+# Get the hostname
 try:
     DJANGO_ENVIRONMENT = os.environ["DJANGO_ENVIRONMENT"]
+    DJANGO_HOST_NAME = os.environ["DJANGO_HOST_NAME"]
 except KeyError:
     path_env = os.path.join(BASE_DIR, ".env")
     dotenv.read_dotenv(path_env)
     DJANGO_ENVIRONMENT = os.environ["DJANGO_ENVIRONMENT"]
+    DJANGO_HOST_NAME = os.environ["DJANGO_HOST_NAME"]
 
 if DJANGO_ENVIRONMENT == "PRODUCTION":
     ALLOWED_HOSTS = [
-        "d5625.pythonanywhere.com",
+        DJANGO_HOST_NAME,
     ]
     STATICFILES_DIRS = [
         os.path.join(BASE_DIR, "nasa_get/static/nasa_get"),

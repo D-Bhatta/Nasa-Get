@@ -18,6 +18,7 @@ Notes and code about Nasa Get
     - [Register URLs](#register-urls)
   - [Deploy app on PythonAnywhere](#deploy-app-on-pythonanywhere)
   - [Fix static assets problem](#fix-static-assets-problem)
+  - [Refactor the settings.py file to enable getting host names from .env](#refactor-the-settingspy-file-to-enable-getting-host-names-from-env)
   - [Additional Information](#additional-information)
     - [Screenshots](#screenshots)
     - [Links](#links)
@@ -289,6 +290,37 @@ else:
 - After adding logging this needs to be refactored.
 - Add static files mapping on PythonAnywhere by figuring out the url `/static/` and directory `/home/D5625/Nasa-Get/nasa_get/static/`
 
+## Refactor the settings.py file to enable getting host names from .env
+
+- Move the hostname string into the `.env` file.
+- Change the `settings.py` code to retrieve the hostname from the environment
+  - Catch `KeyError` on not finding a key, and get it from the  `.env` file
+
+```python
+# Find out what environment we are running in
+# Get the hostname
+try:
+    DJANGO_ENVIRONMENT = os.environ["DJANGO_ENVIRONMENT"]
+    DJANGO_HOST_NAME = os.environ["DJANGO_HOST_NAME"]
+except KeyError:
+    path_env = os.path.join(BASE_DIR, ".env")
+    dotenv.read_dotenv(path_env)
+    DJANGO_ENVIRONMENT = os.environ["DJANGO_ENVIRONMENT"]
+    DJANGO_HOST_NAME = os.environ["DJANGO_HOST_NAME"]
+
+if DJANGO_ENVIRONMENT == "PRODUCTION":
+    ALLOWED_HOSTS = [DJANGO_HOST_NAME]
+    STATICFILES_DIRS = [os.path.join(BASE_DIR, "nasa_get/static/nasa_get")]
+```
+
+```.env
+DJANGO_ENVIRONMENT = DEVELOPMENT
+
+DJANGO_HOST_NAME = localhost_host_string
+
+DJANGO_SECRET_KEY = keystring
+
+```
 
 ## Additional Information
 
