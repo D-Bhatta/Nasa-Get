@@ -25,7 +25,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# Retrieve the environment variables
+try:
+    path_env = os.path.join(BASE_DIR, ".env")
+    dotenv.read_dotenv(path_env)
+except EnvironmentError:
+    print("Couldn't retrieve the environment variables")
+
 try:
     path_env = os.path.join(BASE_DIR, ".env")
     dotenv.read_dotenv(path_env)
