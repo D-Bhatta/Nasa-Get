@@ -258,6 +258,8 @@ deactivate
 workon nasa-get-env
 # Install requirements
 python -m pip install -r requirements_dev.txt
+# collect static
+python manage.py collectstatic
 ```
 
 ## Fix static assets problem
