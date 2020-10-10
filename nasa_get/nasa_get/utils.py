@@ -44,4 +44,4 @@ def generate_secret_key(env_file_name):
     """
     with open(env_file_name, "a+") as f:
         generated_key = get_random_secret_key()
-        f.write(f"DJANGO_SECRET_KEY = {generated_key}\n")
+        f.write(f"\nDJANGO_SECRET_KEY = {generated_key}\n")

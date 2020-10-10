@@ -37,12 +37,28 @@ except KeyError:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-if gethostname() == "d5625.pythonanywhere.com":
+# Find out what environment we are running in
+try:
+    DJANGO_ENVIRONMENT = os.environ["DJANGO_ENVIRONMENT"]
+except KeyError:
+    path_env = os.path.join(BASE_DIR, ".env")
+    dotenv.read_dotenv(path_env)
+    SECRET_KEY = os.environ["DJANGO_ENVIRONMENT"]
+
+if os.environ["DJANGO_ENVIRONMENT"] == "PRODUCTION":
     ALLOWED_HOSTS = [
         "d5625.pythonanywhere.com",
     ]
-else:
+    STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, "nasa_get/static/nasa_get"),
+    ]
+elif os.environ["DJANGO_ENVIRONMENT"] == "DEVELOPMENT":
+    STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, "nasa_get\\static\\nasa_get"),
+    ]
     ALLOWED_HOSTS = []
+else:
+    pass
 
 
 # Application definition
