@@ -295,8 +295,29 @@ else:
 - Move the hostname string into the `.env` file.
 - Change the `settings.py` code to retrieve the hostname from the environment
   - Catch `KeyError` on not finding a key, and get it from the  `.env` file
+- Retrieve the environment variables at the top of the `settings.py` below the imports
 
 ```python
+# Retrieve the environment variables
+try:
+    path_env = os.path.join(BASE_DIR, ".env")
+    dotenv.read_dotenv(path_env)
+except EnvironmentError:
+    print("Couldn't retrieve the environment variables")
+
+try:
+    path_env = os.path.join(BASE_DIR, ".env")
+    dotenv.read_dotenv(path_env)
+    SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
+except KeyError:
+    path_env = os.path.join(BASE_DIR, ".env")
+    utils.generate_secret_key(path_env)
+    dotenv.read_dotenv(path_env)
+    SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
+
 # Find out what environment we are running in
 # Get the hostname
 try:
