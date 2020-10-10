@@ -16,6 +16,7 @@ Notes and code about Nasa Get
       - [Create a base template](#create-a-base-template)
     - [Create a HTML template for homepage app](#create-a-html-template-for-homepage-app)
     - [Register URLs](#register-urls)
+  - [Deploy app on PythonAnywhere](#deploy-app-on-pythonanywhere)
   - [Fix static assets problem](#fix-static-assets-problem)
   - [Additional Information](#additional-information)
     - [Screenshots](#screenshots)
@@ -241,6 +242,22 @@ from django.urls import path
 from . import views
 
 urlpatterns = [path("", views.homepage, name="homepage")]
+```
+
+## Deploy app on PythonAnywhere
+
+Open a bash console
+
+```bash
+# clone the repo
+git clone --single-branch --branch start <remote-repo>
+cd Nasa-Get
+#create a virtual environment
+mkvirtualenv nasa-get-env --python=/usr/bin/python3.8
+deactivate
+workon nasa-get-env
+# Install requirements
+python -m pip install -r requirements_dev.txt
 ```
 
 ## Fix static assets problem
