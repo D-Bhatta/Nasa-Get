@@ -1,13 +1,4 @@
 ---
-name: Feature request
-about: Suggest an idea for this project
-title: ''
-labels: ''
-assignees: ''
-
----
-
----
 name: 🚀 Feature request
 about: If you have a feature request 💡
 title: ''
