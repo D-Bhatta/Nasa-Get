@@ -154,12 +154,3 @@ USE_TZ = True
 STATIC_URL = "/static/"
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
-
-if gethostname() == "d5625.pythonanywhere.com":
-    STATICFILES_DIRS = [
-        os.path.join(BASE_DIR, "nasa_get/static/nasa_get"),
-    ]
-else:
-    STATICFILES_DIRS = [
-        os.path.join(BASE_DIR, "nasa_get\\static\\nasa_get"),
-    ]
