@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 import os
 from pathlib import Path
+from socket import gethostname
 
 import dotenv
 
@@ -36,7 +37,12 @@ except KeyError:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+if gethostname() == "d5625.pythonanywhere.com":
+    ALLOWED_HOSTS = [
+        "d5625.pythonanywhere.com",
+    ]
+else:
+    ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -66,7 +72,7 @@ ROOT_URLCONF = "nasa_get.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": ["nasa_get\\templates\\",],  ## Add base templates directory
+        "DIRS": ["nasa_get/templates/",],  ## Add base templates directory
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -131,6 +137,13 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "nasa_get\\static\\nasa_get"),
-]
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
+if gethostname() == "d5625.pythonanywhere.com":
+    STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, "nasa_get/static/nasa_get"),
+    ]
+else:
+    STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, "nasa_get\\static\\nasa_get"),
+    ]
