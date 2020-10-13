@@ -134,3 +134,6 @@ portfolio-env/
 
 # Environments
 ng-env/
+
+# Secrets files
+secrets.txt
