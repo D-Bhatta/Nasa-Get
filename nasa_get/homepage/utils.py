@@ -44,6 +44,3 @@ def cycle_keys():
     print(get_key())
     write_key()
     print(get_key())
-
-
-write_key()
