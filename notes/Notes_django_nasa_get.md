@@ -583,7 +583,57 @@ def main():
 ```
 
 - Create a view function that validates form data, encrypts cleaned form data and stores it into model, and renders the **API Index page**.
+
+```python
+def key(request):
+
+    # Create form object
+    form = UserAPIForm()
+
+    # On data sent via form
+    if request == "POST":
+        # set form data in form object
+        form = UserAPIForm(request.POST)
+
+        # check form validity
+        if form.is_valid():
+            # encrypt api key and store in model
+            user_api = UserAPIs(api_key=encrypt(form.cleaned_data["api_key"]))
+            user_api.save()
+            return render(request, "dummy.html", {})
+        else:
+            error_message = "Invalid Form"
+            lg.error(error_message)
+            raise Http404(error_message)
+    else:
+        error_message = "Invalid Request"
+        lg.error(error_message)
+        raise Http404(error_message)
+```
+
+```python
+urlpatterns = [path("admin/", admin.site.urls), path("home/", include("homepage.urls"))]
+```
+
 - Create a dummy page and link to it.
+
+```html
+{% extends "base.html" %} {% load static %} {% block header_content %}
+{{block.super }}
+<head>
+  <title>Welcome to NASA Get</title>
+</head>
+<body>
+  <main>
+    <vstack spacing="s" stretch="" align-x="center" align-y="center">
+      <h1>dummy test page</h1>
+    </vstack>
+  </main>
+</body>
+{% endblock header_content %}
+
+```
+
 - Change the dummy page to **API Index page**.
 - In `urls.py` create link at `key`
 - Refactor as needed
