@@ -25,7 +25,7 @@
 - Create 3 `APIInfo` instances
 - Refactor as needed
 
-## Create view that renders each api in database as a card.
+## Create view that renders each api in database as a card
 
 - Get all project indexes
 - Get all `APIInfo` instances
