@@ -446,7 +446,6 @@ def homepage(request):
 - Add a button as submit
 - Refactor as needed
 
-
 ## Additional Information
 
 ### Screenshots
