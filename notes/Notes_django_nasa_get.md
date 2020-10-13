@@ -426,6 +426,28 @@ def homepage(request):
 - Refactor as needed
 
 ```html
+{% extends "base.html" %} {% load static %} {% block header_content %}
+{{block.super }}
+<head>
+  <title>Welcome to NASA Get</title>
+</head>
+<body>
+  <main>
+    <vstack spacing="m">
+      <vstack spacing="s" stretch="" align-x="center" align-y="center">
+        <h1>Welcome to NASA Get!</h1>
+        <p>
+          Instruction about what to do with the input field <b>Placeholder</b>
+        </p>
+      </vstack>
+      <spacer></spacer>
+      <vstack spacing="l">
+        <p>test</p>
+      </vstack>
+    </vstack>
+  </main>
+</body>
+{% endblock header_content %}
 
 ```
 
@@ -433,7 +455,7 @@ def homepage(request):
 
 - Create a model that can store user API keys
 - Create model with name `UserAPIs` with
-- Create a `api_key` field as tex
+- Create a `api_key` field as `TextField`
 - Make migrations
 - Migrate
 - Try saving 2 random inputs there
