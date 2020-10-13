@@ -191,7 +191,7 @@ a {
 }
 
 h1 {
-  font-size: 2.2em;
+  font-size: 2.5em;
   margin: 0;
 }
 
@@ -712,7 +712,7 @@ dd {
 
 @media (max-width: 507px) {
   h1 {
-    font-size: 1.8em;
+    font-size: 2.5em;
   }
 }
 
