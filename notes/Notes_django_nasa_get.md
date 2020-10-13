@@ -458,8 +458,33 @@ def homepage(request):
 - Create a `api_key` field as `TextField`
 - Make migrations
 - Migrate
+- Add to admin
 - Try saving 2 random inputs there
 - Refactor as needed
+
+```python
+from django.db import models
+
+# Model to store API keys
+
+
+class UserAPIs(models.Model):
+    api_key = models.TextField()
+```
+
+```python
+from django.contrib import admin
+from homepage.models import UserAPIs
+
+# Register your models here.
+
+
+class UserAPIsAdmin(admin.ModelAdmin):
+    pass
+
+
+admin.site.register(UserAPIs, UserAPIsAdmin)
+```
 
 ### Create a view that is used to save form data and model and redirect to API Index page
 

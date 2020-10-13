@@ -34,6 +34,7 @@
 - Create a `api_key` field as tex
 - Make migrations
 - Migrate
+- Add to admin
 - Try saving 2 random inputs there
 - Refactor as needed
 
