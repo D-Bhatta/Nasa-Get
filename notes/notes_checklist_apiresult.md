@@ -1,7 +1,6 @@
 # Result of the selected API page
 
 - If no API key, redirect to home page
-- Show a `loading...` heading and then destroy it.
 - Display the result of the particular API
 - Take 3 API from NASA to test
 - Compute the API result
