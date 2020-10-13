@@ -403,12 +403,31 @@ def homepage(request):
 
 - Replace current css with Ridge css
 
+```html
+{% block header_content %} {% load static %}
+<html>
+  <meta charset="utf-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, user-scalable=yes"
+  />
+  <link rel="stylesheet" href="{% static 'css/ridge.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/ridge-dark.css' %}" />
+  {% endblock header_content %}
+</html>
+
+```
+
 ### Create a short instruction paragraph below the heading
 
 - Add instruction about what to do with the input field
 - Add some sample text there first
 - Change it to proper instructions
 - Refactor as needed
+
+```html
+
+```
 
 ### Create a model to store user API
 

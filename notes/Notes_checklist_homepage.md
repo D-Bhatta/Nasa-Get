@@ -21,6 +21,7 @@
 
 ## Create a short instruction paragraph below the heading
 
+- Create heading
 - Add instruction about what to do with the input field
 - Add some sample text there first
 - Change it to proper instructions
