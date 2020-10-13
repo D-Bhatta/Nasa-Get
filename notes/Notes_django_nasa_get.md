@@ -496,6 +496,23 @@ admin.site.register(UserAPIs, UserAPIsAdmin)
 - Define a variable `api_key` that is a textFeild and define `attrs` with name, id  as `api_input`, placeholder as `API Key`, and type as `password`
 - Refactor as needed
 
+```python
+from django import forms
+
+
+class UserAPIForm(forms.Form):
+    api_key = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "type": "password",
+                "placeholder": "API Key",
+                "name": "api_input",
+                "id": "api_input",
+            }
+        )
+    )
+```
+
 #### Define views and urls
 
 - Write a function to encrypt API key in utils
