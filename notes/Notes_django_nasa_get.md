@@ -460,8 +460,8 @@ def homepage(request):
 - Create a model that can store user API keys
 - Create model with name `UserAPIs` with
 - Create a `api_key` field as `TextField`
-- Make migrations
-- Migrate
+- Make migrations: `python manage.py makemigrations homepage`
+- Migrate: `python manage.py migrate`
 - Add to admin
 - Try saving 2 random inputs there
 
