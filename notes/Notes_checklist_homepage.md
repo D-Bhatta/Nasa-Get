@@ -21,6 +21,7 @@
 
 ## Create a short instruction paragraph below the heading
 
+- Create heading
 - Add instruction about what to do with the input field
 - Add some sample text there first
 - Change it to proper instructions
@@ -33,6 +34,7 @@
 - Create a `api_key` field as tex
 - Make migrations
 - Migrate
+- Add to admin
 - Try saving 2 random inputs there
 - Refactor as needed
 
@@ -52,7 +54,7 @@
 - Create a view function that validates form data, encrypts cleaned form data and stores it into model, and renders the **API Index page**.
 - Create a dummy page and link to it.
 - Change the dummy page to **API Index page**.
-- In `urls.py` create link at `key`
+- In `urls.py` create link at `addkey`
 - Refactor as needed
 
 ## Create a form with an input field and a button
