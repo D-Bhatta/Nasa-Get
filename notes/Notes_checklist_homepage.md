@@ -54,7 +54,7 @@
 - Create a view function that validates form data, encrypts cleaned form data and stores it into model, and renders the **API Index page**.
 - Create a dummy page and link to it.
 - Change the dummy page to **API Index page**.
-- In `urls.py` create link at `key`
+- In `urls.py` create link at `addkey`
 - Refactor as needed
 
 ## Create a form with an input field and a button
