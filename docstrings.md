@@ -1,5 +1,12 @@
 # Docstrings
 
+## Sections
+
+- [Docstrings](#docstrings)
+  - [Sections](#sections)
+  - [Method docstring](#method-docstring)
+  - [Class docstring](#class-docstring)
+
 ## Method docstring
 
 ```python
