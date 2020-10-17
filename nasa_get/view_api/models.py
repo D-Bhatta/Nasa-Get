@@ -6,5 +6,6 @@ from django.db import models
 class APIInfo(models.Model):
     r"""Model to store API name, link, a picture of API result"""
     name = models.TextField()
+    description = models.TextField(default="")
     link = models.URLField()
     image = models.FilePathField(path="/img")
