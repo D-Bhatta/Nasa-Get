@@ -28,7 +28,6 @@
 
 ## Create view that renders each api in database as a card
 
-- Get all project indexes
 - Get all `APIInfo` instances
 - Create `context` dictionary with them
 - Render the `api_index.html` page

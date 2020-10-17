@@ -716,8 +716,41 @@ urlpatterns = [
 
 - Create a model called `APIInfo`
 - Store API name, link, a picture of API result
-- Make migrations
-- Migrate
+
+```python
+from django.db import models
+
+# Create your models here.
+
+# Model APIInfo: stores info about APIs
+class APIInfo(models.Model):
+    r"""Model to store API name, link, a picture of API result"""
+    name = models.TextField()
+    link = models.URLField()
+    image = models.FilePathField(path="/img")
+```
+
+- Make migrations: `python manage.py makemigrations view_api`
+- Migrate: `python manage.py migrate`
+- Test and refactor in local
+- Add the `description` field to store api descriptions
+
+```python
+from django.db import models
+
+# Create your models here.
+
+# Model APIInfo: stores info about APIs
+class APIInfo(models.Model):
+    r"""Model to store API name, link, a picture of API result"""
+    name = models.TextField()
+    description = models.TextField(default="")
+    link = models.URLField()
+    image = models.FilePathField(path="/img")
+```
+
+- Make migrations: `python manage.py makemigrations view_api`
+- Migrate: `python manage.py migrate`
 - Test and refactor in local
 - Choose 3 API, one text, two image/video
 - Create 3 `APIInfo` instances
