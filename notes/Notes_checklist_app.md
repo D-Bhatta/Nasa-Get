@@ -40,6 +40,14 @@
 
 - Get the results of all APIs preemptively at app start using threads, to save rendering time
 
+### Authenticate using a token
+
+- Send a token and authenticate using it
+
+### Token and encryption expiry
+
+- Tokens and encrypted keys expire after a while
+
 ## Design: USer stories
 
 **Homepage** will be a singular app. It will take data from user, and store it in a model. It will return something to the user that can be used to authenticate them. It will redirect to the **Choose your API page**.
