@@ -579,32 +579,36 @@ def main():
 ```
 
 - Create a view function that validates form data, encrypts cleaned form data and stores it into model, and renders the **API Index page**.
+- The view function should be the same as the one displaying the form.
 
 ```python
-def key(request):
-
+def homepage(request):
+    lg.debug("Rendering homepage")
     # Create form object
     form = UserAPIForm()
 
     # On data sent via form
-    if request == "POST":
+    if request.method == "POST":
+        lg.debug("Request is post")
         # set form data in form object
         form = UserAPIForm(request.POST)
 
         # check form validity
         if form.is_valid():
+            lg.debug("Form is valid")
             # encrypt api key and store in model
             user_api = UserAPIs(api_key=encrypt(form.cleaned_data["api_key"]))
             user_api.save()
+            lg.debug("saved api key")
+            lg.debug("rendering API index page")
             return render(request, "dummy.html", {})
         else:
             error_message = "Invalid Form"
             lg.error(error_message)
             raise Http404(error_message)
-    else:
-        error_message = "Invalid Request"
-        lg.error(error_message)
-        raise Http404(error_message)
+    lg.debug("Not a form request")
+    context = {"form": form}
+    return render(request, "home.html", context=context)
 ```
 
 ```python
@@ -630,13 +634,60 @@ urlpatterns = [path("admin/", admin.site.urls), path("home/", include("homepage.
 
 ```
 
-- In `urls.py` create link at `addkey`
+- In `urls.py` create link at `addkey/`
+
+```python
+urlpatterns = [
+    path("", views.homepage, name="homepage"),
+    path("addkey/", views.homepage, name="homepage"),
+]
+```
 
 ### Create a form with an input field and a button
 
 - Add a form element with an using ridge css and django templates, with form directing to the `addkey` link
 - Center the stuff
 - Add a button as submit
+
+```html
+{% extends "base.html" %} {% load static %} {% block header_content %}
+{{block.super }}
+<head>
+  <title>Welcome to NASA Get</title>
+</head>
+<body>
+  <main>
+    <vstack spacing="m">
+      <vstack spacing="s" stretch="" align-x="center" align-y="center">
+        <h1>Welcome to NASA Get!</h1>
+        <p>
+          Instruction about what to do with the input field <b>Placeholder</b>
+        </p>
+      </vstack>
+      <spacer></spacer>
+      <vstack spacing="l">
+        <vstack spacing="xs">
+          <aside class="pa-s">
+            <vstack>
+              <form action="/home/addkey/" method="POST">
+                {% csrf_token %}
+                <vstack spacing="s">
+                  <vstack>
+                    {{form}}
+                    <button type="submit" name="button">Save</button>
+                  </vstack>
+                </vstack>
+              </form>
+            </vstack>
+          </aside>
+        </vstack>
+      </vstack>
+    </vstack>
+  </main>
+</body>
+{% endblock header_content %}
+
+```
 
 ## Additional Information
 
