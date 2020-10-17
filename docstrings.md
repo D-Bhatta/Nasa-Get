@@ -122,3 +122,5 @@ r"""The summary line for a class docstring should fit on one line.
 
     """
 ```
+
+Source: https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_numpy.html
