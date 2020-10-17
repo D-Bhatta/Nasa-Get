@@ -14,7 +14,21 @@
       </vstack>
       <spacer></spacer>
       <vstack spacing="l">
-        <p>test</p>
+        <vstack spacing="xs">
+          <aside class="pa-s">
+            <vstack>
+              <form action="/home/addkey/" method="POST">
+                {% csrf_token %}
+                <vstack spacing="s">
+                  <vstack>
+                    {{form}}
+                    <button type="submit" name="button">Save</button>
+                  </vstack>
+                </vstack>
+              </form>
+            </vstack>
+          </aside>
+        </vstack>
       </vstack>
     </vstack>
   </main>
