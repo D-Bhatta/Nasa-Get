@@ -9,6 +9,7 @@
 
 ## Main tasks
 
+- Create a new app called `view_api`
 - Create models to store info about APIs
 - Create view that renders each api in database as a card.
 - Register urls for the choose api view
@@ -36,7 +37,7 @@
 ## Register urls for the choose api view
 
 - Change the dummy page to **API Index page**.
-- Register url as `apis/`
+- Register url as `view_api/`
 - Create the `templates/api_index.html` file
 - Refactor as needed
 
