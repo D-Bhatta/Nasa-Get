@@ -35,6 +35,7 @@
 
 ## Register urls for the choose api view
 
+- Change the dummy page to **API Index page**.
 - Register url as `apis/`
 - Create the `templates/api_index.html` file
 - Refactor as needed
