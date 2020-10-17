@@ -397,7 +397,6 @@ def homepage(request):
 - Create a model to store user API
 - Create a view that is used to save form data and model and redirect to API Index page
 - Redirect to API Index page
-- Refactor as needed
 
 ### Modify `base.html` to make it mission ready
 
@@ -423,7 +422,6 @@ def homepage(request):
 - Add instruction about what to do with the input field
 - Add some sample text there first
 - Change it to proper instructions
-- Refactor as needed
 
 ```html
 {% extends "base.html" %} {% load static %} {% block header_content %}
@@ -460,7 +458,6 @@ def homepage(request):
 - Migrate
 - Add to admin
 - Try saving 2 random inputs there
-- Refactor as needed
 
 ```python
 from django.db import models
@@ -494,7 +491,6 @@ admin.site.register(UserAPIs, UserAPIsAdmin)
 
 - Create a `homepage/forms.py` from that saves to model
 - Define a variable `api_key` that is a textFeild and define `attrs` with name, id  as `api_input`, placeholder as `API Key`, and type as `password`
-- Refactor as needed
 
 ```python
 from django import forms
@@ -634,16 +630,13 @@ urlpatterns = [path("admin/", admin.site.urls), path("home/", include("homepage.
 
 ```
 
-- Change the dummy page to **API Index page**.
-- In `urls.py` create link at `key`
-- Refactor as needed
+- In `urls.py` create link at `addkey`
 
 ### Create a form with an input field and a button
 
 - Add a form element with an using ridge css and django templates, with form directing to the `addkey` link
 - Center the stuff
 - Add a button as submit
-- Refactor as needed
 
 ## Additional Information
 
