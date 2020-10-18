@@ -958,6 +958,8 @@ urlpatterns = [
 
 ```
 
+- Collect static in deployment with `python manage.py collectstatic` and reload deployment
+
 ## Additional Information
 
 ### Screenshots
