@@ -120,6 +120,35 @@ r"""The summary line for a class docstring should fit on one line.
     attr2 : :obj:`int`, optional
         Description of `attr2`.
 
+    Methods
+    ----------
+    method_name(c='rgb')
+        Description of public `method_name`.
+    method_name(signature)
+        Description of public `method_name`.
+
+    Examples
+    --------
+    These are written in doctest format, and should illustrate how to
+    use the function.
+
+    >>> from view_api.models import APIInfo
+    >>> a1 = APIInfo(
+    ...     name = "APOD",
+    ...     description = "Astronomy Picture of the Day",
+    ...     link = "https://api.nasa.gov/planetary/apod",
+    ...     image = "img/1.jpg",
+    ... )
+    >>> a1.save()
+    asyncio - 2020-10-18 05:53:05,483-5384-DEBUG-Using proactor: IocpProactor
+    >>> a2 = APIInfo(
+    ...     name = "EPIC",
+    ...     description = "Latest Images from Earth Polychromatic Imaging Camera",
+    ...     link = "https://api.nasa.gov/EPIC/api/natural",
+    ...     image = "img/2.png",
+    ... )
+    >>> ...
+    >>> a2.save()
     """
 ```
 
