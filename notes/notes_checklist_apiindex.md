@@ -22,8 +22,9 @@
 - Make migrations
 - Migrate
 - Test and refactor in local
-- Choose 3 API, one text, two image/video
-- Create 3 `APIInfo` instances
+- Choose 4 API, one text, three image/video
+- Register models in `admin.py`
+- Create 4 `APIInfo` instances
 - Refactor as needed
 
 ## Create view that renders each api in database as a card
