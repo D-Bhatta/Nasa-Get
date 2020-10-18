@@ -851,15 +851,30 @@ asyncio - 2020-10-18 06:09:36,172-6332-DEBUG-Using proactor: IocpProactor
 'img/1.jpg'
 ```
 
-- Refactor as needed
-
 ### Create view that renders each api in database as a card
 
 - Get all project indexes
 - Get all `APIInfo` instances
 - Create `context` dictionary with them
 - Render the `api_index.html` page
-- Refactor as needed
+
+```python
+from django.shortcuts import render
+from view_api.models import APIInfo
+
+# Create your views here.
+
+
+def api_index(request):
+    # Get all APIInfo objects
+    apis = APIInfo.objects.all()  # pylint: disable="no-member"
+
+    # Create context dict
+    context = {"apis": apis}
+
+    # Render the APIs
+    return render(request, "api_index.html", context)
+```
 
 ### Register urls for the choose api view
 
