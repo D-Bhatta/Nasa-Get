@@ -9,6 +9,7 @@
 
 ## Main tasks
 
+- Create a new app called `view_api`
 - Create models to store info about APIs
 - Create view that renders each api in database as a card.
 - Register urls for the choose api view
@@ -21,13 +22,13 @@
 - Make migrations
 - Migrate
 - Test and refactor in local
-- Choose 3 API, one text, two image/video
-- Create 3 `APIInfo` instances
+- Choose 4 API, one text, three image/video
+- Register models in `admin.py`
+- Create 4 `APIInfo` instances
 - Refactor as needed
 
 ## Create view that renders each api in database as a card
 
-- Get all project indexes
 - Get all `APIInfo` instances
 - Create `context` dictionary with them
 - Render the `api_index.html` page

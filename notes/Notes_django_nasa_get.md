@@ -29,6 +29,12 @@ Notes and code about Nasa Get
       - [Create forms](#create-forms)
       - [Define views and urls](#define-views-and-urls)
     - [Create a form with an input field and a button](#create-a-form-with-an-input-field-and-a-button)
+  - [API Index page](#api-index-page)
+    - [Main tasks](#main-tasks-1)
+    - [Create models to store info about APIs](#create-models-to-store-info-about-apis)
+    - [Create view that renders each api in database as a card](#create-view-that-renders-each-api-in-database-as-a-card)
+    - [Register urls for the choose api view](#register-urls-for-the-choose-api-view)
+    - [Create a template page to render apis as cards](#create-a-template-page-to-render-apis-as-cards)
   - [Additional Information](#additional-information)
     - [Screenshots](#screenshots)
     - [Links](#links)
@@ -454,8 +460,8 @@ def homepage(request):
 - Create a model that can store user API keys
 - Create model with name `UserAPIs` with
 - Create a `api_key` field as `TextField`
-- Make migrations
-- Migrate
+- Make migrations: `python manage.py makemigrations homepage`
+- Migrate: `python manage.py migrate`
 - Add to admin
 - Try saving 2 random inputs there
 
@@ -682,6 +688,269 @@ urlpatterns = [
           </aside>
         </vstack>
       </vstack>
+    </vstack>
+  </main>
+</body>
+{% endblock header_content %}
+
+```
+
+## API Index page
+
+- Cards are displayed that show all the APIs that a user can access
+- Each card has a picture, a heading corresponding to the API name, and a link to selected API page
+- The app should show stuff in cards
+- Each card should have a picture, a heading, and a link to a page
+- The app should take the data to populate the cards from a data base
+- Each card will open onto a new page with a particular id
+
+### Main tasks
+
+- Create a new app called `view_api`
+- Create models to store info about APIs
+- Create view that renders each api in database as a card.
+- Register urls for the choose api view
+- Create a template page to render apis as cards
+
+### Create models to store info about APIs
+
+- Create a model called `APIInfo`
+- Store API name, link, a picture of API result
+
+```python
+from django.db import models
+
+# Create your models here.
+
+# Model APIInfo: stores info about APIs
+class APIInfo(models.Model):
+    r"""Model to store API name, link, a picture of API result"""
+    name = models.TextField()
+    link = models.URLField()
+    image = models.FilePathField(path="/img")
+```
+
+- Make migrations: `python manage.py makemigrations view_api`
+- Migrate: `python manage.py migrate`
+- Test and refactor in local
+- Add the `description` field to store api descriptions
+
+```python
+from django.db import models
+
+# Create your models here.
+
+# Model APIInfo: stores info about APIs
+class APIInfo(models.Model):
+    r"""Model to store API name, link, a picture of API result
+
+    Examples
+    --------
+    Shell examples:
+
+    >>> from view_api.models import APIInfo
+    >>> a1 = APIInfo(
+    ...     name = "APOD",
+    ...     description = "Astronomy Picture of the Day",
+    ...     link = "https://api.nasa.gov/planetary/apod",
+    ...     image = "img/1.jpg",
+    ... )
+    >>> a1.save()
+    asyncio - 2020-10-18 05:53:05,483-5384-DEBUG-Using proactor: IocpProactor
+    >>> a2 = APIInfo(
+    ...     name = "EPIC",
+    ...     description = "Latest Images from Earth Polychromatic Imaging Camera",
+    ...     link = "https://api.nasa.gov/EPIC/api/natural",
+    ...     image = "img/2.png",
+    ... )
+    >>>...
+    >>>
+    >>> from view_api.models import APIInfo
+    >>> APIInfo.objects.all()
+    asyncio - 2020-10-18 06:09:36,172-6332-DEBUG-Using proactor: IocpProactor
+    <QuerySet [<APIInfo: APIInfo object (1)>, <APIInfo: APIInfo object (2)>, <APIInfo: APIInfo object (3)>, <APIInfo: APIInfo object (4)>]>
+    >>> APIInfo.objects.get(id=1)
+    <APIInfo: APIInfo object (1)>
+    >>> APIInfo.objects.get(id=1).name
+    'APOD'
+    >>> APIInfo.objects.get(id=1).image
+    'img/1.jpg'
+    """
+    name = models.TextField()
+    description = models.TextField(default="")
+    link = models.URLField()
+    image = models.FilePathField(path="/img")
+```
+
+- Make migrations: `python manage.py makemigrations view_api`
+- Migrate: `python manage.py migrate`
+- Test and refactor in local
+- Choose 4 API, one text, three image/video
+- Register models in `admin.py`
+
+```python
+from django.contrib import admin
+from view_api.models import APIInfo
+
+# Register your models here.
+
+
+class APIInfoAdmin(admin.ModelAdmin):
+    pass
+
+
+admin.site.register(APIInfo, APIInfoAdmin)
+```
+
+- Create 4 `APIInfo` instances
+
+```python
+a1 = APIInfo(
+    name="APOD",
+    description="Astronomy Picture of the Day",
+    link="https://api.nasa.gov/planetary/apod",
+    image="img/1.jpg",
+)
+a1.save()
+
+a2 = APIInfo(
+    name="EPIC",
+    description="Latest Images from Earth Polychromatic Imaging Camera",
+    link="https://api.nasa.gov/EPIC/api/natural",
+    image="img/2.png",
+)
+a2.save()
+
+a3 = APIInfo(
+    name="DONKI",
+    description="Notifications from Space Weather Database Of Notifications, Knowledge, Information",
+    link="https://api.nasa.gov/DONKI/notifications",
+    image="img/3.png",
+)
+a3.save()
+
+a4 = APIInfo(
+    name="MRP",
+    description="Image data gathered by NASA's Curiosity, Opportunity, and Spirit rovers on Mars",
+    link="https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos",
+    image="img/4.jpg",
+)
+a4.save()
+```
+
+```shell
+>>> from view_api.models import APIInfo
+>>> APIInfo.objects.all()
+asyncio - 2020-10-18 06:09:36,172-6332-DEBUG-Using proactor: IocpProactor
+<QuerySet [<APIInfo: APIInfo object (1)>, <APIInfo: APIInfo object (2)>, <APIInfo: APIInfo object (3)>, <APIInfo: APIInfo object (4)>]>
+>>> APIInfo.objects.get(id=1)
+<APIInfo: APIInfo object (1)>
+>>> APIInfo.objects.get(id=1).name
+'APOD'
+>>> APIInfo.objects.get(id=1).image
+'img/1.jpg'
+```
+
+### Create view that renders each api in database as a card
+
+- Get all project indexes
+- Get all `APIInfo` instances
+- Create `context` dictionary with them
+- Render the `api_index.html` page
+
+```python
+from django.shortcuts import render
+from view_api.models import APIInfo
+
+# Create your views here.
+
+
+def api_index(request):
+    # Get all APIInfo objects
+    apis = APIInfo.objects.all()  # pylint: disable="no-member"
+
+    # Create context dict
+    context = {"apis": apis}
+
+    # Render the APIs
+    return render(request, "api_index.html", context)
+```
+
+### Register urls for the choose api view
+
+- Change the dummy page to **API Index page**.
+- Register url as `apis/`
+
+```python
+from django.urls import path
+
+from . import views
+
+urlpatterns = [path("", views.api_index, name="apis")]
+```
+
+```python
+from django.contrib import admin
+from django.urls import include, path
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("home/", include("homepage.urls")),
+    path("apis/", include("view_api.urls")),
+]
+```
+
+- Create the `templates/api_index.html` file
+
+### Create a template page to render apis as cards
+
+- Use code from ridge css
+- Test
+- Replace stuff with `APIInfo` instances passed to `context` dictionary
+- Test
+
+```html
+{% extends "base.html" %} {% load static %} {% block header_content %}
+{{block.super }}
+<head>
+  <title>Welcome to NASA Get</title>
+</head>
+<body>
+  <main>
+    <vstack spacing="l" align-x="center">
+      <section class="">
+        <hstack responsive="" spacing="s" class="bg-background-alt pa-m br-xs">
+          {% for api in apis %}
+          <aside stretch="" class="br-xs bn">
+            <vstack>
+              <a href="">
+                <svg
+                  class="br-xs br--top"
+                  width="100%"
+                  height="180"
+                  xmlns="http://www.w3.org/2000/svg"
+                  preserveAspectRatio="xMidYMid slice"
+                  focusable="false"
+                  role="img"
+                  aria-label="Placeholder: Image cap"
+                >
+                  <title>{{api.name}}</title>
+                  <rect width="100%" height="100%" fill="#000000"></rect>
+                  <image
+                    href=" {% static api.image %}"
+                    height="100%"
+                    width="100%"
+                  /></svg
+              ></a>
+              <hstack spacing="s" align-x="center">
+                <h1>{{api.name}}</h1>
+              </hstack>
+              <p class="pa-m">{{api.description}}</p>
+            </vstack>
+          </aside>
+          {% endfor %}
+        </hstack>
+      </section>
     </vstack>
   </main>
 </body>
