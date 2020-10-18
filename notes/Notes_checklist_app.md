@@ -52,6 +52,15 @@
 
 - Create parent classes for `Nasa`, `NasaInfoExtractor` classes to inherit from
 
+### Add  other APIs
+
+- Add other APIs from Nasa
+
+### Add a public mission and API to README.md
+
+- Add a mission for the **why**
+- Add a public API for usage
+
 ## Design: USer stories
 
 **Homepage** will be a singular app. It will take data from user, and store it in a model. It will return something to the user that can be used to authenticate them. It will redirect to the **Choose your API page**.
