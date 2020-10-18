@@ -879,9 +879,28 @@ def api_index(request):
 ### Register urls for the choose api view
 
 - Change the dummy page to **API Index page**.
-- Register url as `view_api/`
+- Register url as `apis/`
+
+```python
+from django.urls import path
+
+from . import views
+
+urlpatterns = [path("", views.api_index, name="apis")]
+```
+
+```python
+from django.contrib import admin
+from django.urls import include, path
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("home/", include("homepage.urls")),
+    path("apis/", include("view_api.urls")),
+]
+```
+
 - Create the `templates/api_index.html` file
-- Refactor as needed
 
 ### Create a template page to render apis as cards
 
@@ -889,7 +908,55 @@ def api_index(request):
 - Test
 - Replace stuff with `APIInfo` instances passed to `context` dictionary
 - Test
-- Refactor as needed
+
+```html
+{% extends "base.html" %} {% load static %} {% block header_content %}
+{{block.super }}
+<head>
+  <title>Welcome to NASA Get</title>
+</head>
+<body>
+  <main>
+    <vstack spacing="l" align-x="center">
+      <section class="">
+        <hstack responsive="" spacing="s" class="bg-background-alt pa-m br-xs">
+          {% for api in apis %}
+          <aside stretch="" class="br-xs bn">
+            <vstack>
+              <a href="">
+                <svg
+                  class="br-xs br--top"
+                  width="100%"
+                  height="180"
+                  xmlns="http://www.w3.org/2000/svg"
+                  preserveAspectRatio="xMidYMid slice"
+                  focusable="false"
+                  role="img"
+                  aria-label="Placeholder: Image cap"
+                >
+                  <title>{{api.name}}</title>
+                  <rect width="100%" height="100%" fill="#000000"></rect>
+                  <image
+                    href=" {% static api.image %}"
+                    height="100%"
+                    width="100%"
+                  /></svg
+              ></a>
+              <hstack spacing="s" align-x="center">
+                <h1>{{api.name}}</h1>
+              </hstack>
+              <p class="pa-m">{{api.description}}</p>
+            </vstack>
+          </aside>
+          {% endfor %}
+        </hstack>
+      </section>
+    </vstack>
+  </main>
+</body>
+{% endblock header_content %}
+
+```
 
 ## Additional Information
 
