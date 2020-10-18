@@ -39,7 +39,7 @@ def homepage(request):
             user_api.save()
             lg.debug("saved api key")
             lg.debug("rendering API index page")
-            return render(request, "dummy.html", {})
+            return HttpResponseRedirect("/apis/")
         else:
             error_message = "Invalid Form"
             lg.error(error_message)
