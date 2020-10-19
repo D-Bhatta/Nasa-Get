@@ -30,7 +30,6 @@
 - Return context dict in method
 - Add a context builder for `APOD`
 - Add a context builder for `EPIC`
-- Get key from `UserAPIs` model
 - Add a context builder for `MRP`
 - Add a context builder for `DONKI`
 - Add module level docstrings
