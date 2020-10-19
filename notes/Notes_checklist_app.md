@@ -65,6 +65,14 @@
 
 - Classes in `apis.py` module and `ContextBuilder` can be made into static singletons
 
+### Add logging, exception handling, tests
+
+- Add logging
+
+### Refactor hor APIInfo calls are made
+
+- Currently they are made twice
+
 ## Design: USer stories
 
 **Homepage** will be a singular app. It will take data from user, and store it in a model. It will return something to the user that can be used to authenticate them. It will redirect to the **Choose your API page**.
