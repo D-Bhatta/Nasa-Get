@@ -39,7 +39,7 @@
 
 ## Create results view: render `api_result.html` page with selected api result as context
 
-- Get api key from `APIInfo` model
+- Get api key from `UserAPIs` model
 - If it is null, redirect to homepage
 - query id,
 - query api,
