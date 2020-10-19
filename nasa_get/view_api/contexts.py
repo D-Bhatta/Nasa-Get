@@ -19,6 +19,7 @@ from json import load as jload
 from pathlib import Path
 
 from view_api.apis import get_api_result
+from view_api.models import APIInfo
 from view_api.utils import get_test_api_key  # pylint: disable=import-error
 
 # Configure logger lg with config for appLogger from config.json["logging"]
@@ -124,6 +125,9 @@ class ContextBuilder:
 
         multimedia = True
 
+        # query id
+        api = APIInfo.objects.get(pk=1)
+
         context = {
             "multimedia": multimedia,
             "message": message,
@@ -131,6 +135,7 @@ class ContextBuilder:
             "url": url,
             "title": title,
             "media_type": media_type,
+            "api": api,
         }
 
         return context
@@ -140,6 +145,8 @@ class ContextBuilder:
             provider=self.provider, name=self.name, key=self.key
         )
         result = result[0]
+        # query id
+        api = APIInfo.objects.get(pk=2)
 
         media_type = "image"
         title = "Imagery collected by DSCOVR's Earth Polychromatic Imaging Camera (EPIC)"
@@ -174,6 +181,7 @@ class ContextBuilder:
             "url": url,
             "title": title,
             "media_type": media_type,
+            "api": api,
         }
 
         return context
@@ -184,15 +192,17 @@ class ContextBuilder:
         )
 
         result = result[0]
+        # query id
+        api = APIInfo.objects.get(pk=3)
 
         media_type = "text"
 
         title = "Notifications from The Space Weather Database Of Notifications, Knowledge, Information (DONKI)"
         multimedia = False
 
-        message = result["messageBody"]
+        message = result["messageBody"].split("\n")
 
-        date = result["messageIssueTime"][0:11]
+        date = result["messageIssueTime"][0:10]
 
         url = result["messageURL"]
 
@@ -203,6 +213,7 @@ class ContextBuilder:
             "url": url,
             "title": title,
             "media_type": media_type,
+            "api": api,
         }
 
         return context
@@ -212,6 +223,9 @@ class ContextBuilder:
             provider=self.provider, name=self.name, key=self.key
         )
         result = result["latest_photos"][0]
+
+        # query id
+        api = APIInfo.objects.get(pk=4)
 
         media_type = "image"
 
@@ -231,6 +245,7 @@ class ContextBuilder:
             "url": url,
             "title": title,
             "media_type": media_type,
+            "api": api,
         }
 
         return context
