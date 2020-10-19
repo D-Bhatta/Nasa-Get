@@ -50,6 +50,38 @@ lg = logging.getLogger("appLogger")
 
 
 class ContextBuilder:
+    r"""Builds context dictionaries for rendering with Django templates.
+
+    Attributes
+    ----------
+    api_functions : dict
+        List of APIs supported with their corresponding builder functions.
+    name : str
+        Empty string to represent name of API.
+
+    Parameters
+    ----------
+    key : str
+        Key for the API.
+    provider : str
+        Provider of the API.
+
+    Methods
+    ----------
+    build_context(name)
+        Method that returns a context dict.
+
+    Examples
+    --------
+    Use the context_builder to get a context dict.
+
+    >>> key = "DEMO_KEY"
+    >>> provider = "Nasa"
+    >>> name = "DONKI"
+    >>> context_builder = ContextBuilder(key, provider)
+    >>> context = context_builder.build_context(name)
+    """
+
     def __init__(self, key: str, provider: str):
         self.key = key
         self.provider = provider
@@ -86,8 +118,11 @@ class ContextBuilder:
         These are written in doctest format, and should illustrate how to
         use the function.
 
-        >>> name = "APOD"
-        >>> result = nasa.query_api(name)
+        >>> key = "DEMO_KEY"
+        >>> provider = "Nasa"
+        >>> name = "DONKI"
+        >>> context_builder = ContextBuilder(key, provider)
+        >>> context = context_builder.build_context(name)
         """
         self.name = name
         try:
@@ -218,15 +253,3 @@ class ContextBuilder:
         }
 
         return context
-
-
-def test_context():
-    key = get_test_api_key()
-    provider = "Nasa"
-    name = "DONKI"
-    context_builder = ContextBuilder(key, provider)
-    context = context_builder.build_context(name)
-    lg.info(context)
-
-
-test_context()
