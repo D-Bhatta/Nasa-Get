@@ -210,6 +210,38 @@ class Nasa:
 
 
 def get_api_result(provider: str, name: str, key: str):
+    r"""Returns the result of a selected API.
+
+    This method returns the result of a selected API passed to it by the `name`
+    parameter in a given `provider` for a given `key`.
+
+    Parameters
+    ----------
+    name : str
+        Name of the API.
+    provider : str
+        Provider of the API. Example: "Nasa".
+    key : str
+        API key.
+
+
+    Returns
+    -------
+    result : dict
+        A dict object that is the result of the selected query. It is the
+        response body for the request in dict form.
+
+    Notes
+    -----
+    Only pass names supported by this provider.
+
+    Examples
+    --------
+    These are written in doctest format, and should illustrate how to
+    use the function.
+
+    >>> result = get_api_result("Nasa", "APOD", "DEMO_KEY")
+    """
     if provider == "Nasa":
         nasa = Nasa(key)
         result = nasa.query_api(name)
