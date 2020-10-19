@@ -12,6 +12,8 @@
 - Create results view: render `api_result.html` page with selected api result as context
 - Create urls with path as `<int:id>/`
 - Create `api_result.html` template
+- Create `api_result.html_image` template
+- Create `api_result.html_video` template
 
 ## Create query functions
 
@@ -50,6 +52,22 @@
 - Create urls with path as `<int:id>/`
 
 ## Create `api_result.html` template
+
+- Use code from ridge css
+- Test
+- Replace stuff with `resource` parameters passed to `context` dictionary
+- Test
+- Refactor as needed
+
+## Create `api_result.html_image` template
+
+- Use code from ridge css
+- Test
+- Replace stuff with `resource` parameters passed to `context` dictionary
+- Test
+- Refactor as needed
+
+## Create `api_result.html_video` template
 
 - Use code from ridge css
 - Test
