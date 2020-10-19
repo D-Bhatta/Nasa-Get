@@ -35,9 +35,7 @@
 - If it is null, redirect to homepage
 - query id,
 - query api,
-- see what kind of resource it sends,
-- create object `resource` with resource type and resource  link,
-- create context,
+- Use `ContextBuilder` class: create `context`,
 - render `api_result.html`
 
 ## Create urls with path as `<int:id>/`
