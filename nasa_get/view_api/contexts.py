@@ -7,6 +7,14 @@ from pathlib import Path
 from apis import get_api_result
 from utils import get_test_api_key
 
+# Configure logger lg with config for appLogger from config.json["logging"]
+CONFIG_DIR = Path(__file__).resolve().parent.parent.parent
+with open(CONFIG_DIR / "config.json", "r") as f:
+    config = jload(f)
+    logging.config.dictConfig(config["logging"])
+lg = logging.getLogger("appLogger")
+# lg.debug("This is a debug message")
+
 
 class ContextBuilder:
     def __init__(self):
