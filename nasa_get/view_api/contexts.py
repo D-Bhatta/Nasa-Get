@@ -73,12 +73,7 @@ class ContextBuilder:
         date = result["date"]
         message = result["explanation"]
 
-        multimedia = False
-
-        if media_type == "video" or media_type == "image":
-            multimedia = True
-        else:
-            multimedia = False
+        multimedia = True
 
         context = {
             "multimedia": multimedia,
@@ -135,7 +130,33 @@ class ContextBuilder:
         return context
 
     def donki_notifications_context(self):
-        pass
+        result = get_api_result(
+            provider=self.provider, name=self.name, key=self.key
+        )
+
+        result = result[0]
+
+        media_type = "text"
+
+        title = "Notifications from The Space Weather Database Of Notifications, Knowledge, Information (DONKI)"
+        multimedia = False
+
+        message = result["messageBody"]
+
+        date = result["messageIssueTime"][0:11]
+
+        url = result["messageURL"]
+
+        context = {
+            "multimedia": multimedia,
+            "message": message,
+            "date": date,
+            "url": url,
+            "title": title,
+            "media_type": media_type,
+        }
+
+        return context
 
     def mrp_context(self):
         result = get_api_result(
@@ -145,7 +166,6 @@ class ContextBuilder:
 
         media_type = "image"
 
-        lg.info(result)
         title = "Image data gathered by NASA's Curiosity rovers on Mars"
         multimedia = True
 
@@ -170,7 +190,7 @@ class ContextBuilder:
 def test_context():
     key = get_test_api_key()
     provider = "Nasa"
-    name = "MRP"
+    name = "DONKI"
     context_builder = ContextBuilder(key, provider)
     context = context_builder.build_context(name)
     lg.info(context)
