@@ -16,8 +16,18 @@
 ## Create query functions
 
 - Create a file `apis.py`
-- Create a function to query API based on a dictionary
-- Create api query functions for each api
+- Create a class to query API: class `Nasa`
+- Create api query functions for each api in class `Nasa`
+- Update module docstrings
+- Create class docstrings
+- Create function docstrings
+
+## Create context builder class/funtions
+
+- Create an `ContextBuilder` class
+- It will take API `result` and `name` as parameters and return a context dictionary using a method
+- For each api, create a method to build a `context` dictionary.
+- Return context dict in method
 
 ## Create results view: render `api_result.html` page with selected api result as context
 
