@@ -47,4 +47,12 @@ def api_result(request, id):
 
     context = context_builder.build_context(name)
 
-    return render(request, "api_result.html", context)
+    if context["multimedia"]:
+        if context["media_type"] == "image":
+            return render(request, "api_result_image.html", context)
+        else:
+            if context["media_type"] == "video":
+                return render(request, "api_result_video.html", context)
+    else:
+        if context["media_type"] == "text":
+            return render(request, "api_result.html", context)
