@@ -28,6 +28,12 @@
 - It will take API `result` and `name` as parameters and return a context dictionary using a method
 - For each api, create a method to build a `context` dictionary.
 - Return context dict in method
+- Add a context builder for `APOD`
+- Add a context builder for `EPIC`
+- Get key from `UserAPIs` model
+- Add a context builder for `MRP`
+- Add a context builder for `DONKI`
+
 
 ## Create results view: render `api_result.html` page with selected api result as context
 
