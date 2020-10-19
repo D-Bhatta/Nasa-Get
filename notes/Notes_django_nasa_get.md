@@ -968,6 +968,13 @@ urlpatterns = [
 - Update module docstrings
 - Create class docstrings
 - Create function docstrings
+- APIs are queried using `requests` module. `requests.get` sends a `GET` message.
+- API parameters can be automatically built by passing a `dict` object with `{"param_name": "value",...}`
+- `r.text` returns the response body as a string
+- `json.loads(r.text)` returns the response body as a dict object
+- `timedelta` creates a value equivalent to one day's time.
+- `.strftime` can be used to format date
+- `today` get's today's date
 
 ```python
 """Docstring for the apis.py module.
