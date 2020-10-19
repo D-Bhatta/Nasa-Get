@@ -1,6 +1,16 @@
 """Docstring for the apis.py module.
 
-This module contains classes and functions to query APIs
+This module contains classes and functions to query APIs.
+
+To query an api pass the following parameters to the get_api_result function
+
+- provider
+- name
+- key
+
+Example:
+
+get_api_result("Nasa", "APOD", "DEMO_KEY")
 
 Currently supported APIs:
 
