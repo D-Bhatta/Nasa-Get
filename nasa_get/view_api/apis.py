@@ -15,7 +15,7 @@ NASA:
 import json
 import logging
 import logging.config
-from datetime import date
+from datetime import date, timedelta
 from json import load as jload
 from pathlib import Path
 
@@ -102,7 +102,39 @@ class Nasa:
         return result
 
     def donki_notifications(self):
-        pass
+        url = "https://api.nasa.gov/DONKI/notifications"
+
+        # Build end date
+        today = date.today()
+        end_date = today.strftime("%Y-%m-%d")
+
+        # Build start date
+        # This month's first day
+        first = today.replace(day=1)
+        # Last months last day
+        last_month_last_day = first - timedelta(days=1)
+        last_month = last_month_last_day.strftime("%Y-%m")
+        start_date = last_month + "-01"
+
+        # Build params
+        payload = {
+            "api_key": self.key,
+            "start_date": start_date,
+            "end_date": end_date,
+        }
+
+        # Query url and get result in result as dict
+        r = requests.get(url, params=payload)
+        lg.info(f"Status Code: {r.status_code}")
+
+        try:
+            result = json.loads(r.text)
+            lg.info(f"Write to json object")
+        except json.JSONDecodeError as e:
+            lg.error(f"error: {e}")
+
+        # return result
+        return result
 
 
 def get_api_result(provider: str, name: str, key: str):
@@ -113,4 +145,4 @@ def get_api_result(provider: str, name: str, key: str):
     return result
 
 
-get_api_result("Nasa", "MRP", get_test_api_key())
+get_api_result("Nasa", "DONKI", get_test_api_key())
