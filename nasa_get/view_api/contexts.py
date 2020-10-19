@@ -129,6 +129,7 @@ class ContextBuilder:
             "date": date,
             "url": url,
             "title": title,
+            "media_type": media_type,
         }
 
         return context
@@ -137,13 +138,39 @@ class ContextBuilder:
         pass
 
     def mrp_context(self):
-        pass
+        result = get_api_result(
+            provider=self.provider, name=self.name, key=self.key
+        )
+        result = result["latest_photos"][0]
+
+        media_type = "image"
+
+        lg.info(result)
+        title = "Image data gathered by NASA's Curiosity rovers on Mars"
+        multimedia = True
+
+        message = result["camera"]["full_name"]
+
+        date = result["earth_date"]
+
+        url = result["img_src"]
+
+        context = {
+            "multimedia": multimedia,
+            "message": message,
+            "date": date,
+            "url": url,
+            "title": title,
+            "media_type": media_type,
+        }
+
+        return context
 
 
 def test_context():
     key = get_test_api_key()
     provider = "Nasa"
-    name = "EPIC"
+    name = "MRP"
     context_builder = ContextBuilder(key, provider)
     context = context_builder.build_context(name)
     lg.info(context)
