@@ -15,6 +15,7 @@ NASA:
 import json
 import logging
 import logging.config
+from datetime import date
 from json import load as jload
 from pathlib import Path
 
@@ -82,7 +83,23 @@ class Nasa:
         return result
 
     def mrp(self):
-        pass
+        url = "https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/latest_photos/"
+
+        # Build params
+        payload = {"api_key": self.key}
+
+        # Query url and get result in result as dict
+        r = requests.get(url, params=payload)
+        lg.info(f"Status Code: {r.status_code}")
+
+        try:
+            result = json.loads(r.text)
+            lg.info(f"Write to json object")
+        except json.JSONDecodeError as e:
+            lg.error(f"error: {e}")
+
+        # return result
+        return result
 
     def donki_notifications(self):
         pass
@@ -96,4 +113,4 @@ def get_api_result(provider: str, name: str, key: str):
     return result
 
 
-get_api_result("Nasa", "EPIC", get_test_api_key())
+get_api_result("Nasa", "MRP", get_test_api_key())
