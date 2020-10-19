@@ -42,6 +42,37 @@ lg = logging.getLogger("appLogger")
 
 
 class Nasa:
+    r"""Class to query NASA Open APIs
+
+        Currently the following APIs are supported
+
+        NASA:
+        ----------
+        - APOD
+        - EPIC
+        - Mars Rover Pictures
+        - DONKI notifications
+
+        Attributes
+        ----------
+        key : str
+            API key acquired from NASA
+
+        Methods
+        ----------
+        query_api(name: str)
+            Returns the result of a selected API.
+
+        Examples
+        --------
+        These are written in doctest format, and should illustrate how to
+        use the function.
+
+        >>> nasa = Nasa(key)
+        >>> name = "APOD"
+        >>> result = nasa.query_api(name)
+        """
+
     def __init__(self, key):
         self.key = key
         self.api_functions = {
@@ -52,7 +83,38 @@ class Nasa:
         }
 
     def query_api(self, name: str):
-        func = self.api_functions[name]
+        r"""Returns the result of a selected API.
+
+    This method returns the result of a selected API passed to it by the `name`
+    parameter.
+
+    Parameters
+    ----------
+    name : str
+        Name of the API.
+
+    Returns
+    -------
+    result : dict
+        A dict object that is the result of the selected query. It is the
+        response body for the request in dict form.
+
+    Notes
+    -----
+    Only pass names supported by this class
+
+    Examples
+    --------
+    These are written in doctest format, and should illustrate how to
+    use the function.
+
+    >>> name = "APOD"
+    >>> result = nasa.query_api(name)
+    """
+        try:
+            func = self.api_functions[name]
+        except KeyError:
+            lg.error("Unknown API: This API is not supported")
         return func()
 
     def apod(self):
