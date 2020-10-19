@@ -37,6 +37,8 @@ Notes and code about Nasa Get
     - [Create a template page to render apis as cards](#create-a-template-page-to-render-apis-as-cards)
   - [Create API query class](#create-api-query-class)
   - [Create context builder class/funtions](#create-context-builder-classfuntions)
+  - [Create results view: render `api_result.html` page with selected api result as context](#create-results-view-render-api_resulthtml-page-with-selected-api-result-as-context)
+  - [Create urls with path as `<int:id>/`](#create-urls-with-path-as-intid)
   - [Additional Information](#additional-information)
     - [Screenshots](#screenshots)
     - [Links](#links)
@@ -1009,7 +1011,7 @@ from json import load as jload
 from pathlib import Path
 
 import requests
-from utils import get_test_api_key  # pylint: disable=import-error
+from view_api.utils import get_test_api_key  # pylint: disable=import-error
 
 # Configure logger lg with config for appLogger from config.json["logging"]
 CONFIG_DIR = Path(__file__).resolve().parent.parent.parent
@@ -1238,6 +1240,302 @@ def get_api_result(provider: str, name: str, key: str):
 - Add method docstrings
 
 ```python
+r"""docstring for `contexts.py`
+
+Contains the class `ContextBuilder` which builds context dicts.
+
+Example:
+    >>> key = "DEMO_KEY"
+    >>> provider = "Nasa"
+    >>> name = "DONKI"
+    >>> context_builder = ContextBuilder(key, provider)
+    >>> context = context_builder.build_context(name)
+
+Attributes:
+    lg (lg): Logger for the module.
+"""
+import json
+import logging
+import logging.config
+from json import load as jload
+from pathlib import Path
+
+from view_api.apis import get_api_result
+from view_api.utils import get_test_api_key  # pylint: disable=import-error
+
+# Configure logger lg with config for appLogger from config.json["logging"]
+CONFIG_DIR = Path(__file__).resolve().parent.parent.parent
+with open(CONFIG_DIR / "config.json", "r") as f:
+    config = jload(f)
+    logging.config.dictConfig(config["logging"])
+lg = logging.getLogger("appLogger")
+# lg.debug("This is a debug message")
+
+
+class ContextBuilder:
+    r"""Builds context dictionaries for rendering with Django templates.
+
+    Attributes
+    ----------
+    api_functions : dict
+        List of APIs supported with their corresponding builder functions.
+    name : str
+        Empty string to represent name of API.
+
+    Parameters
+    ----------
+    key : str
+        Key for the API.
+    provider : str
+        Provider of the API.
+
+    Methods
+    ----------
+    build_context(name)
+        Method that returns a context dict.
+
+    Examples
+    --------
+    Use the context_builder to get a context dict.
+
+    >>> key = "DEMO_KEY"
+    >>> provider = "Nasa"
+    >>> name = "DONKI"
+    >>> context_builder = ContextBuilder(key, provider)
+    >>> context = context_builder.build_context(name)
+    """
+
+    def __init__(self, key: str, provider: str):
+        self.key = key
+        self.provider = provider
+        self.api_functions = {
+            "APOD": self.apod_context,
+            "EPIC": self.epic_context,
+            "DONKI": self.donki_notifications_context,
+            "MRP": self.mrp_context,
+        }
+        self.name = ""
+
+    def build_context(self, name: str):
+        r"""Returns the context of a selected API result.
+
+        This method returns the context of a selected API result passed to it by
+        the `name` parameter.
+
+        Parameters
+        ----------
+        name : str
+            Name of the API.
+
+        Returns
+        -------
+        result : dict
+            A dict object that is the context of a selected API result.
+
+        Notes
+        -----
+        Only pass names supported by this class
+
+        Examples
+        --------
+        These are written in doctest format, and should illustrate how to
+        use the function.
+
+        >>> key = "DEMO_KEY"
+        >>> provider = "Nasa"
+        >>> name = "DONKI"
+        >>> context_builder = ContextBuilder(key, provider)
+        >>> context = context_builder.build_context(name)
+        """
+        self.name = name
+        try:
+            func = self.api_functions[name]
+        except KeyError:
+            lg.error("Unknown API: This API is not supported")
+        return func()
+
+    def apod_context(self):
+        result = get_api_result(provider=self.provider, name=self.name, key=self.key)
+        media_type = result["media_type"]
+        url = result["url"]
+        title = result["title"]
+        date = result["date"]
+        message = result["explanation"]
+
+        multimedia = True
+
+        context = {
+            "multimedia": multimedia,
+            "message": message,
+            "date": date,
+            "url": url,
+            "title": title,
+            "media_type": media_type,
+        }
+
+        return context
+
+    def epic_context(self):
+        result = get_api_result(provider=self.provider, name=self.name, key=self.key)
+        result = result[0]
+
+        media_type = "image"
+        title = (
+            "Imagery collected by DSCOVR's Earth Polychromatic Imaging Camera (EPIC)"
+        )
+        multimedia = True
+
+        identifier = result["identifier"]
+        message = result["caption"]
+        image = result["image"] + ".png"
+
+        date = identifier[0:4] + "/" + identifier[4:6] + "/" + identifier[6:8] + "/"
+
+        url = (
+            "https://api.nasa.gov/EPIC/archive/natural/"
+            + date
+            + "png/"
+            + image
+            + "?api_key="
+            + self.key
+        )
+
+        context = {
+            "multimedia": multimedia,
+            "message": message,
+            "date": date,
+            "url": url,
+            "title": title,
+            "media_type": media_type,
+        }
+
+        return context
+
+    def donki_notifications_context(self):
+        result = get_api_result(provider=self.provider, name=self.name, key=self.key)
+
+        result = result[0]
+
+        media_type = "text"
+
+        title = "Notifications from The Space Weather Database Of Notifications, Knowledge, Information (DONKI)"
+        multimedia = False
+
+        message = result["messageBody"]
+
+        date = result["messageIssueTime"][0:11]
+
+        url = result["messageURL"]
+
+        context = {
+            "multimedia": multimedia,
+            "message": message,
+            "date": date,
+            "url": url,
+            "title": title,
+            "media_type": media_type,
+        }
+
+        return context
+
+    def mrp_context(self):
+        result = get_api_result(provider=self.provider, name=self.name, key=self.key)
+        result = result["latest_photos"][0]
+
+        media_type = "image"
+
+        title = "Image data gathered by NASA's Curiosity rovers on Mars"
+        multimedia = True
+
+        message = result["camera"]["full_name"]
+
+        date = result["earth_date"]
+
+        url = result["img_src"]
+
+        context = {
+            "multimedia": multimedia,
+            "message": message,
+            "date": date,
+            "url": url,
+            "title": title,
+            "media_type": media_type,
+        }
+
+        return context
+```
+
+## Create results view: render `api_result.html` page with selected api result as context
+
+- Get api key from `UserAPIs` model
+- If it is null, redirect to homepage
+- query id,
+- query api,
+- Use `ContextBuilder` class: create `context`,
+- render `api_result.html`
+
+```python
+import json
+import logging
+import logging.config
+from json import load as jload
+from pathlib import Path
+
+from django.shortcuts import render
+from homepage.models import UserAPIs
+from homepage.utils import decrypt
+from view_api.contexts import ContextBuilder
+from view_api.models import APIInfo
+
+# Configure logger lg with config for appLogger from config.json["logging"]
+CONFIG_DIR = Path(__file__).resolve().parent.parent.parent
+with open(CONFIG_DIR / "config.json", "r") as f:
+    config = jload(f)
+    logging.config.dictConfig(config["logging"])
+lg = logging.getLogger("appLogger")
+# lg.debug("This is a debug message")
+
+# Create your views here.
+
+
+def api_index(request):
+    # Get all APIInfo objects
+    apis = APIInfo.objects.all()  # pylint: disable="no-member"
+
+    # Create context dict
+    context = {"apis": apis}
+
+    # Render the APIs
+    return render(request, "api_index.html", context)
+
+
+def api_result(request, id):
+    # Get api key from `UserAPIs` model
+    api_key = UserAPIs.objects.all().order_by("-pk")[0].api_key
+    api_key = decrypt(api_key)
+
+    # query id
+    api = APIInfo.objects.get(pk=id)
+
+    name = api.name
+    provider = "Nasa"
+
+    context_builder = ContextBuilder(api_key, provider)
+
+    context = context_builder.build_context(name)
+
+    return render(request, "api_result.html", context)
+```
+
+## Create urls with path as `<int:id>/`
+
+- Create urls with path as `<int:id>/`
+
+```python
+urlpatterns = [
+    path("", views.api_index, name="apis"),
+    path("<int:id>/", views.api_result, name="api_result"),
+]
 ```
 
 ## Additional Information
