@@ -11,7 +11,7 @@
           {% for api in apis %}
           <aside stretch="" class="br-xs bn">
             <vstack>
-              <a href="">
+              <a href="{% url 'api_result' api.id %}">
                 <svg
                   class="br-xs br--top"
                   width="100%"

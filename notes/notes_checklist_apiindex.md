@@ -14,6 +14,7 @@
 - Create view that renders each api in database as a card.
 - Register urls for the choose api view
 - Create a template page to render apis as cards
+- Change links
 
 ## Create models to store info about APIs
 

@@ -699,6 +699,8 @@ urlpatterns = [
 
 ```
 
+- Collect static in deployment with `python manage.py collectstatic` and reload deployment
+
 ## API Index page
 
 - Cards are displayed that show all the APIs that a user can access
