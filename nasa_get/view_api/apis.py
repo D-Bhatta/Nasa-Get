@@ -143,6 +143,3 @@ def get_api_result(provider: str, name: str, key: str):
         result = nasa.query_api(name)
     lg.info(result)
     return result
-
-
-get_api_result("Nasa", "DONKI", get_test_api_key())
