@@ -213,5 +213,4 @@ def get_api_result(provider: str, name: str, key: str):
     if provider == "Nasa":
         nasa = Nasa(key)
         result = nasa.query_api(name)
-    lg.info(result)
     return result
