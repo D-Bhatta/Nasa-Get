@@ -19,7 +19,7 @@ from json import load as jload
 from pathlib import Path
 
 import requests
-from utils import get_test_api_key
+from utils import get_test_api_key  # pylint: disable=import-error
 
 # Configure logger lg with config for appLogger from config.json["logging"]
 CONFIG_DIR = Path(__file__).resolve().parent.parent.parent
@@ -60,7 +60,26 @@ class Nasa:
         return result
 
     def epic(self):
-        pass
+        # Create urls for querying
+        info_url = "https://api.nasa.gov/EPIC/api/natural"
+        resource_url = "https://api.nasa.gov/EPIC/archive/natural/"
+
+        # Query info_url and get result in result_info_url as dict
+        payload = {"api_key": self.key}
+
+        r = requests.get(info_url, params=payload)
+        lg.info(f"Status Code: {r.status_code}")
+
+        try:
+            result = json.loads(r.text)
+            lg.info(f"Write to json object")
+        except json.JSONDecodeError as e:
+            lg.error(f"error: {e}")
+
+        # Add resource URL to result
+        result[0].update({"resource_url": resource_url})
+
+        return result
 
     def mrp(self):
         pass
@@ -77,4 +96,4 @@ def get_api_result(provider: str, name: str, key: str):
     return result
 
 
-get_api_result("Nasa", "APOD", get_test_api_key())
+get_api_result("Nasa", "EPIC", get_test_api_key())
