@@ -48,9 +48,9 @@
 
 - Tokens and encrypted keys expire after a while
 
-### Refactor `Nasa`, `NasaInfoExtractor` classes to add inheritance
+### Refactor `Nasa` class to add inheritance
 
-- Create parent classes for `Nasa`, `NasaInfoExtractor` classes to inherit from
+- Create parent class for `Nasa` class to inherit from
 
 ### Add  other APIs
 
