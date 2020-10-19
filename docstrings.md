@@ -121,6 +121,13 @@ r"""The summary line for a class docstring should fit on one line.
     attr2 : :obj:`int`, optional
         Description of `attr2`.
 
+    Parameters
+    ----------
+    attr1 : str
+        Description of `attr1`.
+    attr2 : :obj:`int`, optional
+        Description of `attr2`.
+
     Methods
     ----------
     method_name(c='rgb')
