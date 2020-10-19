@@ -33,6 +33,9 @@
 - Get key from `UserAPIs` model
 - Add a context builder for `MRP`
 - Add a context builder for `DONKI`
+- Add module level docstrings
+- Add class docstrings
+- Add method docstrings
 
 
 ## Create results view: render `api_result.html` page with selected api result as context
