@@ -36,7 +36,6 @@
 - Add class docstrings
 - Add method docstrings
 
-
 ## Create results view: render `api_result.html` page with selected api result as context
 
 - Get api key from `UserAPIs` model
