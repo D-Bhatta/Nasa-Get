@@ -86,12 +86,52 @@ class ContextBuilder:
             "date": date,
             "url": url,
             "title": title,
+            "media_type": media_type,
         }
 
         return context
 
     def epic_context(self):
-        pass
+        result = get_api_result(
+            provider=self.provider, name=self.name, key=self.key
+        )
+        result = result[0]
+
+        media_type = "image"
+        title = "Imagery collected by DSCOVR's Earth Polychromatic Imaging Camera (EPIC)"
+        multimedia = True
+
+        identifier = result["identifier"]
+        message = result["caption"]
+        image = result["image"] + ".png"
+
+        date = (
+            identifier[0:4]
+            + "/"
+            + identifier[4:6]
+            + "/"
+            + identifier[6:8]
+            + "/"
+        )
+
+        url = (
+            "https://api.nasa.gov/EPIC/archive/natural/"
+            + date
+            + "png/"
+            + image
+            + "?api_key="
+            + self.key
+        )
+
+        context = {
+            "multimedia": multimedia,
+            "message": message,
+            "date": date,
+            "url": url,
+            "title": title,
+        }
+
+        return context
 
     def donki_notifications_context(self):
         pass
@@ -103,7 +143,7 @@ class ContextBuilder:
 def test_context():
     key = get_test_api_key()
     provider = "Nasa"
-    name = "APOD"
+    name = "EPIC"
     context_builder = ContextBuilder(key, provider)
     context = context_builder.build_context(name)
     lg.info(context)
