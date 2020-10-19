@@ -1,0 +1,71 @@
+{% extends "base.html" %} {% load static %} {% block header_content %}
+{{block.super }}
+<head>
+  <title>Welcome to NASA Get</title>
+</head>
+<body>
+  <main>
+    <vstack spacing="l" align-x="center">
+      <section class="">
+        <hstack responsive="" spacing="s" class="bg-background-alt pa-m br-xs">
+          <aside>
+            <dl>
+              <vstack>
+                <vstack class="pa-s">
+                  <h3>{{api.name}}</h3>
+                  <p>{{title}}</p>
+                </vstack>
+
+                <hr />
+
+                <vstack spacing="m" class="pa-s">
+                  <hstack responsive="" spacing="m">
+                    <vstack>
+                      <dt>Media Type</dt>
+                      <dd>{{media_type}}</dd>
+                    </vstack>
+
+                    <vstack>
+                      <dt>Multimedia</dt>
+                      <dd>{{multimedia}}</dd>
+                    </vstack>
+                  </hstack>
+
+                  <hstack responsive="" spacing="m">
+                    <vstack>
+                      <dt>Date</dt>
+                      <dd>{{date}}</dd>
+                    </vstack>
+
+                    <vstack>
+                      <dt>API</dt>
+                      <dd>{{api.link}}</dd>
+                    </vstack>
+                  </hstack>
+
+                  <vstack>
+                    <iframe
+                      id="ytplayer"
+                      type="text/html"
+                      width="640"
+                      height="360"
+                      src="{{url}}"
+                      frameborder="0"
+                    ></iframe>
+                  </vstack>
+
+                  <vstack>
+                    <dt>Message</dt>
+                    <dd>{{message}}</dd>
+                    <br />
+                  </vstack>
+                </vstack>
+              </vstack>
+            </dl>
+          </aside>
+        </hstack>
+      </section>
+    </vstack>
+  </main>
+</body>
+{% endblock header_content %}
