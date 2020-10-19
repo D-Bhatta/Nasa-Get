@@ -5,6 +5,9 @@ from json import load as jload
 from pathlib import Path
 
 from django.shortcuts import render
+from homepage.models import UserAPIs
+from homepage.utils import decrypt
+from view_api.contexts import ContextBuilder
 from view_api.models import APIInfo
 
 # Configure logger lg with config for appLogger from config.json["logging"]
@@ -27,3 +30,21 @@ def api_index(request):
 
     # Render the APIs
     return render(request, "api_index.html", context)
+
+
+def api_result(request, id):
+    # Get api key from `UserAPIs` model
+    api_key = UserAPIs.objects.all().order_by("-pk")[0].api_key
+    api_key = decrypt(api_key)
+
+    # query id
+    api = APIInfo.objects.get(pk=id)
+
+    name = api.name
+    provider = "Nasa"
+
+    context_builder = ContextBuilder(api_key, provider)
+
+    context = context_builder.build_context(name)
+
+    return render(request, "api_result.html", context)
