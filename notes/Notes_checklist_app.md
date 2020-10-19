@@ -48,6 +48,31 @@
 
 - Tokens and encrypted keys expire after a while
 
+### Refactor `Nasa` class to add inheritance
+
+- Create parent class for `Nasa` class to inherit from
+
+### Add  other APIs
+
+- Add other APIs from Nasa
+
+### Add a public mission and API to README.md
+
+- Add a mission for the **why**
+- Add a public API for usage
+
+### Refactor classes to make them singleton
+
+- Classes in `apis.py` module and `ContextBuilder` can be made into static singletons
+
+### Add logging, exception handling, tests
+
+- Add logging
+
+### Refactor hor APIInfo calls are made
+
+- Currently they are made twice
+
 ## Design: USer stories
 
 **Homepage** will be a singular app. It will take data from user, and store it in a model. It will return something to the user that can be used to authenticate them. It will redirect to the **Choose your API page**.

@@ -35,6 +35,10 @@ Notes and code about Nasa Get
     - [Create view that renders each api in database as a card](#create-view-that-renders-each-api-in-database-as-a-card)
     - [Register urls for the choose api view](#register-urls-for-the-choose-api-view)
     - [Create a template page to render apis as cards](#create-a-template-page-to-render-apis-as-cards)
+  - [Create API query class](#create-api-query-class)
+  - [Create context builder class/funtions](#create-context-builder-classfuntions)
+  - [Create results view: render `api_result.html` page with selected api result as context](#create-results-view-render-api_resulthtml-page-with-selected-api-result-as-context)
+  - [Create urls with path as `<int:id>/`](#create-urls-with-path-as-intid)
   - [Additional Information](#additional-information)
     - [Screenshots](#screenshots)
     - [Links](#links)
@@ -956,6 +960,582 @@ urlpatterns = [
 </body>
 {% endblock header_content %}
 
+```
+
+## Create API query class
+
+- Create a file `apis.py`
+- Create a class to query API: class `Nasa`
+- Create api query functions for each api in class `Nasa`
+- Update module docstrings
+- Create class docstrings
+- Create function docstrings
+- APIs are queried using `requests` module. `requests.get` sends a `GET` message.
+- API parameters can be automatically built by passing a `dict` object with `{"param_name": "value",...}`
+- `r.text` returns the response body as a string
+- `json.loads(r.text)` returns the response body as a dict object
+- `timedelta` creates a value equivalent to one day's time.
+- `.strftime` can be used to format date
+- `today` get's today's date
+
+```python
+"""Docstring for the apis.py module.
+
+This module contains classes and functions to query APIs.
+
+To query an api pass the following parameters to the get_api_result function
+
+- provider
+- name
+- key
+
+Example:
+
+get_api_result("Nasa", "APOD", "DEMO_KEY")
+
+Currently supported APIs:
+
+NASA:
+----------
+- APOD
+- EPIC
+- Mars Rover Pictures
+- DONKI notifications
+
+"""
+import json
+import logging
+import logging.config
+from datetime import date, timedelta
+from json import load as jload
+from pathlib import Path
+
+import requests
+from view_api.utils import get_test_api_key  # pylint: disable=import-error
+
+# Configure logger lg with config for appLogger from config.json["logging"]
+CONFIG_DIR = Path(__file__).resolve().parent.parent.parent
+with open(CONFIG_DIR / "config.json", "r") as f:
+    config = jload(f)
+    logging.config.dictConfig(config["logging"])
+lg = logging.getLogger("appLogger")
+# lg.debug("This is a debug message")
+
+
+class Nasa:
+    r"""Class to query NASA Open APIs
+
+        Currently the following APIs are supported
+
+        NASA:
+        ----------
+        - APOD
+        - EPIC
+        - Mars Rover Pictures
+        - DONKI notifications
+
+        Attributes
+        ----------
+        key : str
+            API key acquired from NASA
+
+        Methods
+        ----------
+        query_api(name: str)
+            Returns the result of a selected API.
+
+        Examples
+        --------
+        These are written in doctest format, and should illustrate how to
+        use the function.
+
+        >>> nasa = Nasa(key)
+        >>> name = "APOD"
+        >>> result = nasa.query_api(name)
+        """
+
+    def __init__(self, key):
+        self.key = key
+        self.api_functions = {
+            "APOD": self.apod,
+            "EPIC": self.epic,
+            "DONKI": self.donki_notifications,
+            "MRP": self.mrp,
+        }
+
+    def query_api(self, name: str):
+        r"""Returns the result of a selected API.
+
+    This method returns the result of a selected API passed to it by the `name`
+    parameter.
+
+    Parameters
+    ----------
+    name : str
+        Name of the API.
+
+    Returns
+    -------
+    result : dict
+        A dict object that is the result of the selected query. It is the
+        response body for the request in dict form.
+
+    Notes
+    -----
+    Only pass names supported by this class
+
+    Examples
+    --------
+    These are written in doctest format, and should illustrate how to
+    use the function.
+
+    >>> name = "APOD"
+    >>> result = nasa.query_api(name)
+    """
+        try:
+            func = self.api_functions[name]
+        except KeyError:
+            lg.error("Unknown API: This API is not supported")
+        return func()
+
+    def apod(self):
+        payload = {"api_key": self.key}
+        url = "https://api.nasa.gov/planetary/apod"
+
+        r = requests.get(url, params=payload)
+        lg.info(f"Status Code: {r.status_code}")
+
+        try:
+            result = json.loads(r.text)
+            lg.info(f"Write to json object")
+        except json.JSONDecodeError as e:
+            lg.error(f"error: {e}")
+
+        return result
+
+    def epic(self):
+        # Create urls for querying
+        info_url = "https://api.nasa.gov/EPIC/api/natural"
+        resource_url = "https://api.nasa.gov/EPIC/archive/natural/"
+
+        # Query info_url and get result in result_info_url as dict
+        payload = {"api_key": self.key}
+
+        r = requests.get(info_url, params=payload)
+        lg.info(f"Status Code: {r.status_code}")
+
+        try:
+            result = json.loads(r.text)
+            lg.info(f"Write to json object")
+        except json.JSONDecodeError as e:
+            lg.error(f"error: {e}")
+
+        # Add resource URL to result
+        result[0].update({"resource_url": resource_url})
+
+        return result
+
+    def mrp(self):
+        url = "https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/latest_photos/"
+
+        # Build params
+        payload = {"api_key": self.key}
+
+        # Query url and get result in result as dict
+        r = requests.get(url, params=payload)
+        lg.info(f"Status Code: {r.status_code}")
+
+        try:
+            result = json.loads(r.text)
+            lg.info(f"Write to json object")
+        except json.JSONDecodeError as e:
+            lg.error(f"error: {e}")
+
+        # return result
+        return result
+
+    def donki_notifications(self):
+        url = "https://api.nasa.gov/DONKI/notifications"
+
+        # Build end date
+        today = date.today()
+        end_date = today.strftime("%Y-%m-%d")
+
+        # Build start date
+        # This month's first day
+        first = today.replace(day=1)
+        # Last months last day
+        last_month_last_day = first - timedelta(days=1)
+        last_month = last_month_last_day.strftime("%Y-%m")
+        start_date = last_month + "-01"
+
+        # Build params
+        payload = {"api_key": self.key, "start_date": start_date, "end_date": end_date}
+
+        # Query url and get result in result as dict
+        r = requests.get(url, params=payload)
+        lg.info(f"Status Code: {r.status_code}")
+
+        try:
+            result = json.loads(r.text)
+            lg.info(f"Write to json object")
+        except json.JSONDecodeError as e:
+            lg.error(f"error: {e}")
+
+        # return result
+        return result
+
+
+def get_api_result(provider: str, name: str, key: str):
+    r"""Returns the result of a selected API.
+
+    This method returns the result of a selected API passed to it by the `name`
+    parameter in a given `provider` for a given `key`.
+
+    Parameters
+    ----------
+    name : str
+        Name of the API.
+    provider : str
+        Provider of the API. Example: "Nasa".
+    key : str
+        API key.
+
+
+    Returns
+    -------
+    result : dict
+        A dict object that is the result of the selected query. It is the
+        response body for the request in dict form.
+
+    Notes
+    -----
+    Only pass names supported by this provider.
+
+    Examples
+    --------
+    These are written in doctest format, and should illustrate how to
+    use the function.
+
+    >>> result = get_api_result("Nasa", "APOD", "DEMO_KEY")
+    """
+    if provider == "Nasa":
+        nasa = Nasa(key)
+        result = nasa.query_api(name)
+    return result
+```
+
+## Create context builder class/funtions
+
+- Create an `ContextBuilder` class
+- It will take API `result` and `name` as parameters and return a context dictionary using a method
+- For each api, create a method to build a `context` dictionary.
+- Return context dict in method
+- Add a context builder for `APOD`
+- Add a context builder for `EPIC`
+- Add a context builder for `MRP`
+- Add a context builder for `DONKI`
+- Add module level docstrings
+- Add class docstrings
+- Add method docstrings
+
+```python
+r"""docstring for `contexts.py`
+
+Contains the class `ContextBuilder` which builds context dicts.
+
+Example:
+    >>> key = "DEMO_KEY"
+    >>> provider = "Nasa"
+    >>> name = "DONKI"
+    >>> context_builder = ContextBuilder(key, provider)
+    >>> context = context_builder.build_context(name)
+
+Attributes:
+    lg (lg): Logger for the module.
+"""
+import json
+import logging
+import logging.config
+from json import load as jload
+from pathlib import Path
+
+from view_api.apis import get_api_result
+from view_api.utils import get_test_api_key  # pylint: disable=import-error
+
+# Configure logger lg with config for appLogger from config.json["logging"]
+CONFIG_DIR = Path(__file__).resolve().parent.parent.parent
+with open(CONFIG_DIR / "config.json", "r") as f:
+    config = jload(f)
+    logging.config.dictConfig(config["logging"])
+lg = logging.getLogger("appLogger")
+# lg.debug("This is a debug message")
+
+
+class ContextBuilder:
+    r"""Builds context dictionaries for rendering with Django templates.
+
+    Attributes
+    ----------
+    api_functions : dict
+        List of APIs supported with their corresponding builder functions.
+    name : str
+        Empty string to represent name of API.
+
+    Parameters
+    ----------
+    key : str
+        Key for the API.
+    provider : str
+        Provider of the API.
+
+    Methods
+    ----------
+    build_context(name)
+        Method that returns a context dict.
+
+    Examples
+    --------
+    Use the context_builder to get a context dict.
+
+    >>> key = "DEMO_KEY"
+    >>> provider = "Nasa"
+    >>> name = "DONKI"
+    >>> context_builder = ContextBuilder(key, provider)
+    >>> context = context_builder.build_context(name)
+    """
+
+    def __init__(self, key: str, provider: str):
+        self.key = key
+        self.provider = provider
+        self.api_functions = {
+            "APOD": self.apod_context,
+            "EPIC": self.epic_context,
+            "DONKI": self.donki_notifications_context,
+            "MRP": self.mrp_context,
+        }
+        self.name = ""
+
+    def build_context(self, name: str):
+        r"""Returns the context of a selected API result.
+
+        This method returns the context of a selected API result passed to it by
+        the `name` parameter.
+
+        Parameters
+        ----------
+        name : str
+            Name of the API.
+
+        Returns
+        -------
+        result : dict
+            A dict object that is the context of a selected API result.
+
+        Notes
+        -----
+        Only pass names supported by this class
+
+        Examples
+        --------
+        These are written in doctest format, and should illustrate how to
+        use the function.
+
+        >>> key = "DEMO_KEY"
+        >>> provider = "Nasa"
+        >>> name = "DONKI"
+        >>> context_builder = ContextBuilder(key, provider)
+        >>> context = context_builder.build_context(name)
+        """
+        self.name = name
+        try:
+            func = self.api_functions[name]
+        except KeyError:
+            lg.error("Unknown API: This API is not supported")
+        return func()
+
+    def apod_context(self):
+        result = get_api_result(provider=self.provider, name=self.name, key=self.key)
+        media_type = result["media_type"]
+        url = result["url"]
+        title = result["title"]
+        date = result["date"]
+        message = result["explanation"]
+
+        multimedia = True
+
+        context = {
+            "multimedia": multimedia,
+            "message": message,
+            "date": date,
+            "url": url,
+            "title": title,
+            "media_type": media_type,
+        }
+
+        return context
+
+    def epic_context(self):
+        result = get_api_result(provider=self.provider, name=self.name, key=self.key)
+        result = result[0]
+
+        media_type = "image"
+        title = (
+            "Imagery collected by DSCOVR's Earth Polychromatic Imaging Camera (EPIC)"
+        )
+        multimedia = True
+
+        identifier = result["identifier"]
+        message = result["caption"]
+        image = result["image"] + ".png"
+
+        date = identifier[0:4] + "/" + identifier[4:6] + "/" + identifier[6:8] + "/"
+
+        url = (
+            "https://api.nasa.gov/EPIC/archive/natural/"
+            + date
+            + "png/"
+            + image
+            + "?api_key="
+            + self.key
+        )
+
+        context = {
+            "multimedia": multimedia,
+            "message": message,
+            "date": date,
+            "url": url,
+            "title": title,
+            "media_type": media_type,
+        }
+
+        return context
+
+    def donki_notifications_context(self):
+        result = get_api_result(provider=self.provider, name=self.name, key=self.key)
+
+        result = result[0]
+
+        media_type = "text"
+
+        title = "Notifications from The Space Weather Database Of Notifications, Knowledge, Information (DONKI)"
+        multimedia = False
+
+        message = result["messageBody"]
+
+        date = result["messageIssueTime"][0:11]
+
+        url = result["messageURL"]
+
+        context = {
+            "multimedia": multimedia,
+            "message": message,
+            "date": date,
+            "url": url,
+            "title": title,
+            "media_type": media_type,
+        }
+
+        return context
+
+    def mrp_context(self):
+        result = get_api_result(provider=self.provider, name=self.name, key=self.key)
+        result = result["latest_photos"][0]
+
+        media_type = "image"
+
+        title = "Image data gathered by NASA's Curiosity rovers on Mars"
+        multimedia = True
+
+        message = result["camera"]["full_name"]
+
+        date = result["earth_date"]
+
+        url = result["img_src"]
+
+        context = {
+            "multimedia": multimedia,
+            "message": message,
+            "date": date,
+            "url": url,
+            "title": title,
+            "media_type": media_type,
+        }
+
+        return context
+```
+
+## Create results view: render `api_result.html` page with selected api result as context
+
+- Get api key from `UserAPIs` model
+- If it is null, redirect to homepage
+- query id,
+- query api,
+- Use `ContextBuilder` class: create `context`,
+- render `api_result.html`
+
+```python
+import json
+import logging
+import logging.config
+from json import load as jload
+from pathlib import Path
+
+from django.shortcuts import render
+from homepage.models import UserAPIs
+from homepage.utils import decrypt
+from view_api.contexts import ContextBuilder
+from view_api.models import APIInfo
+
+# Configure logger lg with config for appLogger from config.json["logging"]
+CONFIG_DIR = Path(__file__).resolve().parent.parent.parent
+with open(CONFIG_DIR / "config.json", "r") as f:
+    config = jload(f)
+    logging.config.dictConfig(config["logging"])
+lg = logging.getLogger("appLogger")
+# lg.debug("This is a debug message")
+
+# Create your views here.
+
+
+def api_index(request):
+    # Get all APIInfo objects
+    apis = APIInfo.objects.all()  # pylint: disable="no-member"
+
+    # Create context dict
+    context = {"apis": apis}
+
+    # Render the APIs
+    return render(request, "api_index.html", context)
+
+
+def api_result(request, id):
+    # Get api key from `UserAPIs` model
+    api_key = UserAPIs.objects.all().order_by("-pk")[0].api_key
+    api_key = decrypt(api_key)
+
+    # query id
+    api = APIInfo.objects.get(pk=id)
+
+    name = api.name
+    provider = "Nasa"
+
+    context_builder = ContextBuilder(api_key, provider)
+
+    context = context_builder.build_context(name)
+
+    return render(request, "api_result.html", context)
+```
+
+## Create urls with path as `<int:id>/`
+
+- Create urls with path as `<int:id>/`
+
+```python
+urlpatterns = [
+    path("", views.api_index, name="apis"),
+    path("<int:id>/", views.api_result, name="api_result"),
+]
 ```
 
 ## Additional Information
