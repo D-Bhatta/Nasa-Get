@@ -30,7 +30,7 @@ from json import load as jload
 from pathlib import Path
 
 import requests
-from utils import get_test_api_key  # pylint: disable=import-error
+from view_api.utils import get_test_api_key  # pylint: disable=import-error
 
 # Configure logger lg with config for appLogger from config.json["logging"]
 CONFIG_DIR = Path(__file__).resolve().parent.parent.parent
