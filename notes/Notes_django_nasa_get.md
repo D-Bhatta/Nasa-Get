@@ -1570,7 +1570,6 @@ urlpatterns = [
 ]
 ```
 
-
 ## Create `api_result.html` template
 
 - Use code from ridge css
