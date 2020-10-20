@@ -39,6 +39,9 @@ Notes and code about Nasa Get
   - [Create context builder class/funtions](#create-context-builder-classfuntions)
   - [Create results view: render `api_result.html` page with selected api result as context](#create-results-view-render-api_resulthtml-page-with-selected-api-result-as-context)
   - [Create urls with path as `<int:id>/`](#create-urls-with-path-as-intid)
+  - [Create `api_result.html` template](#create-api_resulthtml-template)
+  - [Create `api_result_image.html` template](#create-api_result_imagehtml-template)
+  - [Create `api_result_video.html` template](#create-api_result_videohtml-template)
   - [Additional Information](#additional-information)
     - [Screenshots](#screenshots)
     - [Links](#links)
@@ -671,7 +674,9 @@ urlpatterns = [
       <vstack spacing="s" stretch="" align-x="center" align-y="center">
         <h1>Welcome to NASA Get!</h1>
         <p>
-          Instruction about what to do with the input field <b>Placeholder</b>
+          Get your API key from
+          <a href="https://api.nasa.gov/">https://api.nasa.gov/</a> and enter it
+          into the box below
         </p>
       </vstack>
       <spacer></spacer>
@@ -696,6 +701,7 @@ urlpatterns = [
   </main>
 </body>
 {% endblock header_content %}
+
 
 ```
 
@@ -808,6 +814,7 @@ class APIInfoAdmin(admin.ModelAdmin):
 admin.site.register(APIInfo, APIInfoAdmin)
 ```
 
+- Save 4 images in static folder
 - Create 4 `APIInfo` instances
 
 ```python
@@ -1263,6 +1270,7 @@ from json import load as jload
 from pathlib import Path
 
 from view_api.apis import get_api_result
+from view_api.models import APIInfo
 from view_api.utils import get_test_api_key  # pylint: disable=import-error
 
 # Configure logger lg with config for appLogger from config.json["logging"]
@@ -1366,6 +1374,9 @@ class ContextBuilder:
 
         multimedia = True
 
+        # query id
+        api = APIInfo.objects.get(pk=1)
+
         context = {
             "multimedia": multimedia,
             "message": message,
@@ -1373,6 +1384,7 @@ class ContextBuilder:
             "url": url,
             "title": title,
             "media_type": media_type,
+            "api": api,
         }
 
         return context
@@ -1380,6 +1392,8 @@ class ContextBuilder:
     def epic_context(self):
         result = get_api_result(provider=self.provider, name=self.name, key=self.key)
         result = result[0]
+        # query id
+        api = APIInfo.objects.get(pk=2)
 
         media_type = "image"
         title = (
@@ -1409,6 +1423,7 @@ class ContextBuilder:
             "url": url,
             "title": title,
             "media_type": media_type,
+            "api": api,
         }
 
         return context
@@ -1417,15 +1432,17 @@ class ContextBuilder:
         result = get_api_result(provider=self.provider, name=self.name, key=self.key)
 
         result = result[0]
+        # query id
+        api = APIInfo.objects.get(pk=3)
 
         media_type = "text"
 
         title = "Notifications from The Space Weather Database Of Notifications, Knowledge, Information (DONKI)"
         multimedia = False
 
-        message = result["messageBody"]
+        message = result["messageBody"].split("\n")
 
-        date = result["messageIssueTime"][0:11]
+        date = result["messageIssueTime"][0:10]
 
         url = result["messageURL"]
 
@@ -1436,6 +1453,7 @@ class ContextBuilder:
             "url": url,
             "title": title,
             "media_type": media_type,
+            "api": api,
         }
 
         return context
@@ -1443,6 +1461,9 @@ class ContextBuilder:
     def mrp_context(self):
         result = get_api_result(provider=self.provider, name=self.name, key=self.key)
         result = result["latest_photos"][0]
+
+        # query id
+        api = APIInfo.objects.get(pk=4)
 
         media_type = "image"
 
@@ -1462,6 +1483,7 @@ class ContextBuilder:
             "url": url,
             "title": title,
             "media_type": media_type,
+            "api": api,
         }
 
         return context
@@ -1526,7 +1548,15 @@ def api_result(request, id):
 
     context = context_builder.build_context(name)
 
-    return render(request, "api_result.html", context)
+    if context["multimedia"]:
+        if context["media_type"] == "image":
+            return render(request, "api_result_image.html", context)
+        else:
+            if context["media_type"] == "video":
+                return render(request, "api_result_video.html", context)
+    else:
+        if context["media_type"] == "text":
+            return render(request, "api_result.html", context)
 ```
 
 ## Create urls with path as `<int:id>/`
@@ -1538,6 +1568,240 @@ urlpatterns = [
     path("", views.api_index, name="apis"),
     path("<int:id>/", views.api_result, name="api_result"),
 ]
+```
+
+
+## Create `api_result.html` template
+
+- Use code from ridge css
+- Test
+- Replace stuff with `resource` parameters passed to `context` dictionary
+- Test
+- Refactor as needed
+
+```html
+{% extends "base.html" %} {% load static %} {% block header_content %}
+{{block.super }}
+<head>
+  <title>Welcome to NASA Get</title>
+</head>
+<body>
+  <main>
+    <vstack spacing="l" align-x="center">
+      <section class="">
+        <hstack responsive="" spacing="s" class="bg-background-alt pa-m br-xs">
+          <aside>
+            <dl>
+              <vstack>
+                <vstack class="pa-s">
+                  <h3>{{api.name}}</h3>
+                  <p>{{title}}</p>
+                </vstack>
+
+                <hr />
+
+                <vstack spacing="m" class="pa-s">
+                  <hstack responsive="" spacing="m">
+                    <vstack>
+                      <dt>Media Type</dt>
+                      <dd>{{media_type}}</dd>
+                    </vstack>
+
+                    <vstack>
+                      <dt>URL</dt>
+                      <dd>{{url}}</dd>
+                    </vstack>
+                  </hstack>
+
+                  <hstack responsive="" spacing="m">
+                    <vstack>
+                      <dt>Date</dt>
+                      <dd>{{date}}</dd>
+                    </vstack>
+
+                    <vstack>
+                      <dt>API</dt>
+                      <dd>{{api.link}}</dd>
+                    </vstack>
+                  </hstack>
+
+                  <vstack>
+                    <dt>Message</dt>
+                    {% for line in message %}
+                    <dd>{{line}}</dd>
+                    <br />
+                    {% endfor %}
+                  </vstack>
+                </vstack>
+              </vstack>
+            </dl>
+          </aside>
+        </hstack>
+      </section>
+    </vstack>
+  </main>
+</body>
+{% endblock header_content %}
+
+```
+
+## Create `api_result_image.html` template
+
+- Use code from ridge css
+- Test
+- Replace stuff with `resource` parameters passed to `context` dictionary
+- Test
+- Refactor as needed
+
+```html
+{% extends "base.html" %} {% load static %} {% block header_content %}
+{{block.super }}
+<head>
+  <title>Welcome to NASA Get</title>
+</head>
+<body>
+  <main>
+    <vstack spacing="l" align-x="center">
+      <section class="">
+        <hstack responsive="" spacing="s" class="bg-background-alt pa-m br-xs">
+          <aside>
+            <dl>
+              <vstack>
+                <vstack class="pa-s">
+                  <h3>{{api.name}}</h3>
+                  <p>{{title}}</p>
+                </vstack>
+
+                <hr />
+
+                <vstack spacing="m" class="pa-s">
+                  <hstack responsive="" spacing="m">
+                    <vstack>
+                      <dt>Media Type</dt>
+                      <dd>{{media_type}}</dd>
+                    </vstack>
+
+                    <vstack>
+                      <dt>Multimedia</dt>
+                      <dd>{{multimedia}}</dd>
+                    </vstack>
+                  </hstack>
+
+                  <hstack responsive="" spacing="m">
+                    <vstack>
+                      <dt>Date</dt>
+                      <dd>{{date}}</dd>
+                    </vstack>
+
+                    <vstack>
+                      <dt>API</dt>
+                      <dd>{{api.link}}</dd>
+                    </vstack>
+                  </hstack>
+
+                  <vstack>
+                    <img src="{{url}}" alt="EPIC" />
+                  </vstack>
+
+                  <vstack>
+                    <dt>Message</dt>
+                    <dd>{{message}}</dd>
+                    <br />
+                  </vstack>
+                </vstack>
+              </vstack>
+            </dl>
+          </aside>
+        </hstack>
+      </section>
+    </vstack>
+  </main>
+</body>
+{% endblock header_content %}
+
+```
+
+## Create `api_result_video.html` template
+
+- Use code from ridge css
+- Test
+- Replace stuff with `resource` parameters passed to `context` dictionary
+- Test
+- Refactor as needed
+
+```html
+{% extends "base.html" %} {% load static %} {% block header_content %}
+{{block.super }}
+<head>
+  <title>Welcome to NASA Get</title>
+</head>
+<body>
+  <main>
+    <vstack spacing="l" align-x="center">
+      <section class="">
+        <hstack responsive="" spacing="s" class="bg-background-alt pa-m br-xs">
+          <aside>
+            <dl>
+              <vstack>
+                <vstack class="pa-s">
+                  <h3>{{api.name}}</h3>
+                  <p>{{title}}</p>
+                </vstack>
+
+                <hr />
+
+                <vstack spacing="m" class="pa-s">
+                  <hstack responsive="" spacing="m">
+                    <vstack>
+                      <dt>Media Type</dt>
+                      <dd>{{media_type}}</dd>
+                    </vstack>
+
+                    <vstack>
+                      <dt>Multimedia</dt>
+                      <dd>{{multimedia}}</dd>
+                    </vstack>
+                  </hstack>
+
+                  <hstack responsive="" spacing="m">
+                    <vstack>
+                      <dt>Date</dt>
+                      <dd>{{date}}</dd>
+                    </vstack>
+
+                    <vstack>
+                      <dt>API</dt>
+                      <dd>{{api.link}}</dd>
+                    </vstack>
+                  </hstack>
+
+                  <vstack>
+                    <iframe
+                      id="ytplayer"
+                      type="text/html"
+                      width="640"
+                      height="360"
+                      src="{{url}}"
+                      frameborder="0"
+                    ></iframe>
+                  </vstack>
+
+                  <vstack>
+                    <dt>Message</dt>
+                    <dd>{{message}}</dd>
+                    <br />
+                  </vstack>
+                </vstack>
+              </vstack>
+            </dl>
+          </aside>
+        </hstack>
+      </section>
+    </vstack>
+  </main>
+</body>
+{% endblock header_content %}
+
 ```
 
 ## Additional Information
