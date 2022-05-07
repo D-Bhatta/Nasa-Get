@@ -5,7 +5,7 @@ Django==3.1.14
 django-dotenv==1.4.2
 Flask==1.1.2
 grip==4.5.2
-pip==20.2.2
+pip==21.1
 pre-commit==2.6.0
 pytest==6.0.1
 pytest-cov==2.10.0
