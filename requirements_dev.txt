@@ -1,6 +1,6 @@
 black==19.10b0
 coveralls==2.1.2
-cryptography==3.3.2
+cryptography==39.0.1
 Django==3.1.14
 django-dotenv==1.4.2
 Flask==1.1.2
